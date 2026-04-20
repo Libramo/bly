@@ -105,7 +105,7 @@ function notificationHtml({
       <table width="560" cellpadding="0" cellspacing="0" style="background:#111;border:1px solid #1e1e1e;border-radius:6px;overflow:hidden;">
         <tr>
           <td style="padding:32px 36px 24px;border-bottom:1px solid #1e1e1e;">
-            <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#4f72ff;">bly.dj</p>
+            <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#4f72ff;">Bly Analytics</p>
             <h1 style="margin:8px 0 0;font-size:22px;font-weight:400;color:#ddd8ce;letter-spacing:-0.02em;">New message from ${escHtml(name)}</h1>
           </td>
         </tr>
@@ -153,7 +153,7 @@ function autoReplyHtml({ name, lang }: { name: string; lang: string }) {
       <table width="560" cellpadding="0" cellspacing="0" style="background:#111;border:1px solid #1e1e1e;border-radius:6px;overflow:hidden;">
         <tr>
           <td style="padding:40px 36px 32px;">
-            <p style="margin:0 0 24px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#4f72ff;">bly.dj</p>
+            <p style="margin:0 0 24px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#4f72ff;">Bly Analytics</p>
             <h1 style="margin:0 0 16px;font-size:26px;font-weight:400;color:#ddd8ce;letter-spacing:-0.025em;line-height:1.2;">
               ${isFr ? `Bonjour ${escHtml(name)},` : `Hey ${escHtml(name)},`}
             </h1>
