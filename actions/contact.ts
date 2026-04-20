@@ -167,8 +167,8 @@ function autoReplyHtml({ name, lang }: { name: string; lang: string }) {
             <p style="margin:0;font-size:15px;color:#888;line-height:1.8;">
               ${
                 isFr
-                  ? "En attendant, si votre demande est urgente, écrivez-nous directement à <a href='mailto:hello@bly.dj' style='color:#4f72ff;text-decoration:none;'>hello@bly.dj</a>."
-                  : "In the meantime, if it's urgent, you can reach us directly at <a href='mailto:hello@bly.dj' style='color:#4f72ff;text-decoration:none;'>hello@bly.dj</a>."
+                  ? "En attendant, si votre demande est urgente, écrivez-nous directement à <a href='mailto:contact@blyanalytics.com' style='color:#4f72ff;text-decoration:none;'>contact@blyanalytics.com</a>."
+                  : "In the meantime, if it's urgent, you can reach us directly at <a href='mailto:contact@blyanalytics.com' style='color:#4f72ff;text-decoration:none;'>contact@blyanalytics.com</a>."
               }
             </p>
           </td>
