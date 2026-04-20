@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useRef } from "react";
 import {
   motion,
   useInView,
@@ -8,14 +5,7 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Navbar } from "@/components/navbar";
-import { TeamSection } from "@/components/team-section";
-import { WorkSection } from "@/components/work-section";
-import { ContactSection } from "@/components/contact-section";
-import HeroSection from "@/components/hero-section";
-import ServicesSection from "@/components/services-section";
-import FooterSection from "@/components/footer-section";
+import { useRef } from "react";
 
 type Lang = "en" | "fr";
 
@@ -159,6 +149,23 @@ const C = {
   },
 };
 
+function Flip({ v, id }: { v: string; id: string }) {
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={id + v}
+        initial={{ rotateX: -70, opacity: 0 }}
+        animate={{ rotateX: 0, opacity: 1 }}
+        exit={{ rotateX: 70, opacity: 0 }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        style={{ display: "inline-block" }}
+      >
+        {v}
+      </motion.span>
+    </AnimatePresence>
+  );
+}
+
 function MagLink({
   href,
   children,
@@ -210,36 +217,80 @@ function MagLink({
   );
 }
 
-/* ─── Page ──────────────────────────────────────────────── */
-function BlyInner() {
-  const [lang, setLang] = useState<Lang>("en");
+const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
   const t = C[lang];
-
   return (
-    <div className="bg-[var(--bg)] text-[var(--fg)] font-sans min-h-screen overflow-x-hidden transition-colors duration-[350ms]">
-      <Navbar lang={lang} setLang={setLang} />
+    <>
+      {/* ── HERO ── */}
+      <section className="max-w-[920px] mx-auto px-8 pt-[8.5rem] pb-[5.5rem]">
+        <motion.div
+          initial={{ opacity: 0, x: -16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex items-center gap-2 mb-10"
+        >
+          <motion.span
+            animate={{ opacity: [1, 0.25, 1] }}
+            transition={{ duration: 2.2, repeat: Infinity }}
+            className="w-[6px] h-[6px] rounded-full bg-[var(--accent)] block shrink-0"
+          />
+          <span className="text-[12px] text-[var(--muted)] tracking-[0.04em]">
+            <Flip v={t.hero_eyebrow} id="ey" />
+          </span>
+        </motion.div>
 
-      <HeroSection lang={lang} />
-      <ServicesSection lang={lang} />
-      <WorkSection lang={lang} />
+        <h1 className="font-serif text-[clamp(44px,7.5vw,82px)] leading-[1.03] tracking-[-0.035em] mb-8">
+          {(
+            [
+              { k: "h1a", accent: false, indent: false },
+              { k: "h1b", accent: true, indent: false },
+              { k: "h1c", accent: false, indent: true },
+              { k: "h1d", accent: true, indent: true },
+            ] as const
+          ).map(({ k, accent, indent }, i) => (
+            <motion.span
+              key={k}
+              initial={{ opacity: 0, y: 36 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.65,
+                delay: 0.18 + i * 0.09,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className={`block ${accent ? "text-[var(--accent)]" : "text-[var(--fg)]"} ${indent ? "pl-12" : ""}`}
+            >
+              <Flip v={t[k as keyof typeof t] as string} id={k + lang} />
+            </motion.span>
+          ))}
+        </h1>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.55 }}
+          className="text-[15px] leading-[1.85] text-[var(--muted)] max-w-[500px] mb-10"
+        >
+          <Flip v={t.hero_sub} id={"hsub" + lang} />
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.72, duration: 0.4 }}
+          className="flex gap-[10px] flex-wrap"
+        >
+          <MagLink href="#contact" primary>
+            <Flip v={t.cta1} id={"c1" + lang} />
+          </MagLink>
+          <MagLink href="#work">
+            <Flip v={t.cta2} id={"c2" + lang} />
+          </MagLink>
+        </motion.div>
+      </section>
 
       <div className="border-t border-[var(--border)] max-w-[920px] mx-auto" />
-
-      <TeamSection lang={lang} />
-
-      <div className="border-t border-[var(--border)] max-w-[920px] mx-auto" />
-
-      <ContactSection lang={lang} />
-
-      <FooterSection lang={lang} />
-    </div>
+    </>
   );
-}
+};
 
-export default function BlyPage() {
-  return (
-    <ThemeProvider>
-      <BlyInner />
-    </ThemeProvider>
-  );
-}
+export default HeroSection;

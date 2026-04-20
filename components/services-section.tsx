@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useRef } from "react";
+import React, { useRef } from "react";
 import {
   motion,
   useInView,
@@ -8,18 +6,9 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Navbar } from "@/components/navbar";
-import { TeamSection } from "@/components/team-section";
-import { WorkSection } from "@/components/work-section";
-import { ContactSection } from "@/components/contact-section";
-import HeroSection from "@/components/hero-section";
-import ServicesSection from "@/components/services-section";
-import FooterSection from "@/components/footer-section";
 
 type Lang = "en" | "fr";
 
-/* ─── Copy ─────────────────────────────────────────────── */
 const C = {
   en: {
     hero_eyebrow: "A small team. A sharp focus.",
@@ -158,88 +147,100 @@ const C = {
     footer: "Construit à Djibouti.",
   },
 };
+const SERVICES = (t: typeof C.en) => [
+  { title: t.svc1_t, desc: t.svc1_d, icon: "◻" },
+  { title: t.svc2_t, desc: t.svc2_d, icon: "◈" },
+  { title: t.svc3_t, desc: t.svc3_d, icon: "◎" },
+  { title: t.svc4_t, desc: t.svc4_d, icon: "◐" },
+  { title: t.svc5_t, desc: t.svc5_d, icon: "◫" },
+  { title: t.svc6_t, desc: t.svc6_d, icon: "◧" },
+];
 
-function MagLink({
-  href,
+function FadeUp({
   children,
-  primary,
+  delay = 0,
 }: {
-  href: string;
   children: React.ReactNode;
-  primary?: boolean;
+  delay?: number;
 }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 400, damping: 22 });
-  const sy = useSpring(y, { stiffness: 400, damping: 22 });
-  const ref = useRef<HTMLAnchorElement>(null);
-  const move = (e: React.MouseEvent) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    x.set((e.clientX - (r.left + r.width / 2)) * 0.28);
-    y.set((e.clientY - (r.top + r.height / 2)) * 0.28);
-  };
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
   return (
-    <motion.a
+    <motion.div
       ref={ref}
-      href={href}
-      style={{
-        x: sx,
-        y: sy,
-        display: "inline-block",
-        textDecoration: "none",
-        fontSize: "13px",
-        fontWeight: 600,
-        background: primary ? "var(--accent)" : "none",
-        color: primary ? "#fff" : "var(--muted)",
-        border: primary ? "none" : "1px solid var(--border)",
-        borderRadius: "4px",
-        padding: "11px 22px",
-        cursor: "pointer",
-        transition: "border-color 0.2s, color 0.2s",
-      }}
-      onMouseMove={move}
-      onMouseLeave={() => {
-        x.set(0);
-        y.set(0);
-      }}
-      whileTap={{ scale: 0.95 }}
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
-    </motion.a>
+    </motion.div>
+  );
+}
+function Flip({ v, id }: { v: string; id: string }) {
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={id + v}
+        initial={{ rotateX: -70, opacity: 0 }}
+        animate={{ rotateX: 0, opacity: 1 }}
+        exit={{ rotateX: 70, opacity: 0 }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        style={{ display: "inline-block" }}
+      >
+        {v}
+      </motion.span>
+    </AnimatePresence>
   );
 }
 
-/* ─── Page ──────────────────────────────────────────────── */
-function BlyInner() {
-  const [lang, setLang] = useState<Lang>("en");
+const ServicesSection = ({ lang = "en" }: { lang?: Lang }) => {
   const t = C[lang];
-
   return (
-    <div className="bg-[var(--bg)] text-[var(--fg)] font-sans min-h-screen overflow-x-hidden transition-colors duration-[350ms]">
-      <Navbar lang={lang} setLang={setLang} />
+    <>
+      <section id="services" className="max-w-[920px] mx-auto px-8 py-20">
+        <FadeUp>
+          <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-[var(--accent)] mb-[0.4rem]">
+            <Flip v={t.svc_eyebrow} id={"se" + lang} />
+          </p>
+          <h2 className="font-serif text-[clamp(26px,4vw,40px)] tracking-[-0.025em] text-[var(--fg)] mb-[0.6rem] leading-[1.1]">
+            <Flip v={t.svc_title} id={"st" + lang} />
+          </h2>
+          <p className="text-[14px] text-[var(--muted)] leading-[1.75] max-w-[400px] mb-10">
+            <Flip v={t.svc_sub} id={"ss" + lang} />
+          </p>
+        </FadeUp>
 
-      <HeroSection lang={lang} />
-      <ServicesSection lang={lang} />
-      <WorkSection lang={lang} />
+        <div
+          className="grid gap-px bg-[var(--border)] border border-[var(--border)] rounded-[6px] overflow-hidden"
+          style={{ gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))" }}
+        >
+          {SERVICES(t).map((svc, i) => (
+            <motion.div
+              key={svc.title}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06, duration: 0.4 }}
+              // whileHover={{ background: "var(--surface-hover)" }}
+              className="bg-[var(--surface)] hover:bg-[var(--surface-hover)]  duration-200  p-6 transition-colors"
+            >
+              <span className="text-[18px] block mb-3 text-[var(--accent)] leading-none">
+                {svc.icon}
+              </span>
+              <p className="text-[13px] font-semibold text-[var(--fg)] mb-[6px]">
+                {svc.title}
+              </p>
+              <p className="text-[12px] text-[var(--muted)] leading-[1.65]">
+                {svc.desc}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
       <div className="border-t border-[var(--border)] max-w-[920px] mx-auto" />
-
-      <TeamSection lang={lang} />
-
-      <div className="border-t border-[var(--border)] max-w-[920px] mx-auto" />
-
-      <ContactSection lang={lang} />
-
-      <FooterSection lang={lang} />
-    </div>
+    </>
   );
-}
+};
 
-export default function BlyPage() {
-  return (
-    <ThemeProvider>
-      <BlyInner />
-    </ThemeProvider>
-  );
-}
+export default ServicesSection;
