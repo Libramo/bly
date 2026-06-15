@@ -14,7 +14,12 @@ const NAV_LINKS = [
   { href: "#work", en: "Portofolio", fr: "Portofolio" },
   { href: "#team", en: "Team", fr: "Équipe" },
   { href: "#contact", en: "Contact", fr: "Contact" },
-  { href: "https://surveys.blyanalytics.com", en: "Surveys", fr: "Sondages", external: true },
+  {
+    href: "https://surveys.blyanalytics.com",
+    en: "Surveys",
+    fr: "Sondages ",
+    external: true,
+  },
 ];
 
 export function Navbar({
@@ -102,7 +107,9 @@ export function Navbar({
               key={link.href}
               href={link.href}
               onClick={() => setActive(link.href)}
-              {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              {...(link.external
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
               className={`relative text-[13px] font-medium pb-0.5 no-underline transition-colors duration-200 hover:text-(--fg) ${
                 active === link.href ? "text-(--fg)" : "text-(--muted)"
               }`}
@@ -150,12 +157,12 @@ export function Navbar({
             />
             <motion.span
               animate={{ opacity: open ? 0 : 1 }}
-              className="block w-4.5 h-px bg-[var(--fg)] rounded-[1px]"
+              className="block w-4.5 h-px bg-(--fg) rounded-[1px]"
               transition={{ duration: 0.15 }}
             />
             <motion.span
               animate={{ rotate: open ? -45 : 0, y: open ? -6 : 0 }}
-              className="block w-[18px] h-px bg-[var(--fg)] rounded-[1px] origin-center"
+              className="block w-4.5 h-px bg-(--fg) rounded-[1px] origin-center"
               transition={{ duration: 0.2 }}
             />
           </button>
@@ -198,7 +205,7 @@ export function Navbar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed top-13.5 left-0 right-0 z-[49] bg-(--bg) border-b border-(--border) px-8 pt-5 pb-6 flex flex-col gap-5"
+            className="fixed top-13.5 left-0 right-0 z-49 bg-(--bg) border-b border-(--border) px-8 pt-5 pb-6 flex flex-col gap-5"
           >
             {NAV_LINKS.map((link, i) => (
               <motion.a
@@ -211,7 +218,7 @@ export function Navbar({
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="text-base font-medium text-[var(--muted)] no-underline"
+                className="text-base font-medium text-(--muted) no-underline"
               >
                 {lang === "fr" ? link.fr : link.en}
               </motion.a>
