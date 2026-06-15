@@ -65,7 +65,7 @@ export function CaseStudyPage({
   const nav = NAV_COPY[lang];
 
   return (
-    <div className="bg-[var(--bg)] text-[var(--fg)] font-sans min-h-screen">
+    <div className="bg-(--bg) text-[var(--fg)] font-sans min-h-screen">
       {/* Nav */}
       <motion.header
         initial={{ opacity: 0, y: -12 }}

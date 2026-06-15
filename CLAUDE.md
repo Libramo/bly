@@ -183,3 +183,9 @@ CONTACT_FROM_EMAIL=Bly <noreply@bly.dj>
 - **Styling**: Tailwind utility classes in JSX, not inline `style` props. Inline styles only for truly dynamic JS values.
 - **One component per conversation** when refactoring — keeps context lean.
 - Start each session by reading this file before touching any code.
+
+All components refactored to Tailwind convention
+lang prop passed via URL ?lang= param for case study pages
+Logo uses useTheme to swap black/white SVG
+Domain pointing to Vercel, Search Console submitted
+Styling convention: Tailwind classes, inline styles only for dynamic JS values

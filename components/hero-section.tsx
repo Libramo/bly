@@ -222,7 +222,7 @@ const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
   return (
     <>
       {/* ── HERO ── */}
-      <section className="max-w-[920px] mx-auto px-8 pt-[8.5rem] pb-[5.5rem]">
+      <section className="max-w-230 mx-auto px-8 pt-34 pb-22">
         <motion.div
           initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
@@ -232,9 +232,9 @@ const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
           <motion.span
             animate={{ opacity: [1, 0.25, 1] }}
             transition={{ duration: 2.2, repeat: Infinity }}
-            className="w-[6px] h-[6px] rounded-full bg-[var(--accent)] block shrink-0"
+            className="w-1.5 h-1.5 rounded-full bg-(--accent) block shrink-0"
           />
-          <span className="text-[12px] text-[var(--muted)] tracking-[0.04em]">
+          <span className="text-[12px] text-(--muted) tracking-[0.04em]">
             <Flip v={t.hero_eyebrow} id="ey" />
           </span>
         </motion.div>
@@ -288,7 +288,7 @@ const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
         </motion.div>
       </section>
 
-      <div className="border-t border-[var(--border)] max-w-[920px] mx-auto" />
+      <div className="border-t border-(--border) max-w-230 mx-auto" />
     </>
   );
 };
