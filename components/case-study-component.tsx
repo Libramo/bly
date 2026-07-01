@@ -65,19 +65,19 @@ export function CaseStudyPage({
   const nav = NAV_COPY[lang];
 
   return (
-    <div className="bg-(--bg) text-[var(--fg)] font-sans min-h-screen">
+    <div className="bg-(--bg) text-(--fg) font-sans min-h-screen">
       {/* Nav */}
       <motion.header
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="sticky top-0 z-40 flex items-center justify-between px-8 h-[54px] border-b border-[var(--border)] bg-[var(--nav-bg-scrolled)] backdrop-blur-[14px]"
+        className="sticky top-0 z-40 flex items-center justify-between px-8 h-13.5 border-b border-(--border) bg-(--nav-bg-scrolled) backdrop-blur-[14px]"
       >
         <Link
           href="/"
-          className="font-serif text-[21px] tracking-[-0.025em] text-[var(--fg)] no-underline"
+          className="font-serif text-[21px] tracking-[-0.025em] text-(--fg) no-underline"
         >
-          bly
+          Bly
         </Link>
         <div className="flex gap-3 items-center">
           <button
@@ -88,7 +88,7 @@ export function CaseStudyPage({
           </button>
           <Link
             href="/work"
-            className="text-[12px] text-[var(--muted)] no-underline border border-[var(--border)] rounded-[4px] px-[13px] py-[6px]"
+            className="text-[12px] text-(--muted) no-underline border border-(--border) rounded-sm px-3.25 py-1.5"
           >
             {nav.back}
           </Link>

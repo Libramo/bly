@@ -1,6 +1,9 @@
+"use client";
+
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
-import { useTheme } from "./theme-provider";
+import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
 
 function Flip({ v, id }: { v: string; id: string }) {
   return (
@@ -27,28 +30,35 @@ const C = {
     footer: "Fièrement Djiboutien.",
   },
 };
+
 const SOCIALS = [
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/company/bly-analytics/",
   },
-  { label: "X", href: "#" },
+  { label: "X", href: "https://x.com/" },
 ];
 
 const FooterSection = ({ lang = "en" }: { lang?: "en" | "fr" }) => {
-  const { theme } = useTheme();
+  const { resolvedTheme: theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const t = C[lang];
   return (
     <>
       {/* ── FOOTER ── */}
-      <footer className="border-t border-[var(--border)] px-8 py-6 flex items-center justify-between max-w-[920px] mx-auto">
-        <Image
-          src={theme === "dark" ? "/bly-logo-white.svg" : "/bly-logo-black.svg"}
-          alt="Bly"
-          width={80}
-          height={15}
-          priority
-        />
+      <footer className="border-t border-[var(--border)] px-8 py-6 flex items-center justify-between max-w-230 mx-auto">
+        <a href={"/"}>
+          <Image
+            src={
+              mounted && theme === "dark" ? "/bly-logo-white.svg" : "/bly-logo-black.svg"
+            }
+            alt="Bly"
+            width={80}
+            height={15}
+            priority
+          />
+        </a>
 
         <div className="flex items-center gap-4">
           {SOCIALS.map((s) => (

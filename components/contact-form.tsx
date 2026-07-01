@@ -8,7 +8,7 @@ const copy = {
   en: {
     eyebrow: "Get in touch",
     title: "Got a problem worth solving?",
-    sub: "No pitch, no deck. Just tell us what you're building.",
+    sub: "No pitch, no deck. Just tell us what you want build.",
     name: "Your name",
     email: "Your email",
     message: "What are you building?",
@@ -26,7 +26,7 @@ const copy = {
   fr: {
     eyebrow: "Contactez-moi",
     title: "Un problème qui vaut la peine d'être résolu ?",
-    sub: "Pas de pitch, pas de deck. Dites-nous ce que vous construisez.",
+    sub: "Pas de pitch, pas de deck. Dites-nous ce que vous voulez construire.",
     name: "Votre nom",
     email: "Votre e-mail",
     message: "Que construisez-vous ?",

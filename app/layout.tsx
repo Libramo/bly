@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -60,9 +61,9 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var stored = localStorage.getItem('bly-theme');
+                  var stored = localStorage.getItem('theme');
                   var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                  document.documentElement.setAttribute('data-theme', theme);
+                  if (theme === 'dark') document.documentElement.classList.add('dark');
                 } catch(e) {}
               })();
             `,
@@ -70,7 +71,14 @@ export default function RootLayout({
         />
       </head>
       <body className={`${dmSans.variable} ${dmSerif.variable}`}>
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

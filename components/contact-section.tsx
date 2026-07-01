@@ -8,13 +8,13 @@ const copy = {
   en: {
     eyebrow: "Get in touch",
     title: "Got a problem worth solving?",
-    sub: "No pitch, no deck. Just tell us what you're building.",
+    sub: "No pitch, no deck. Just tell us what you want to build.",
     alt: "Or email directly:",
   },
   fr: {
     eyebrow: "Contactez-moi",
     title: "Un problème qui vaut la peine d'être résolu ?",
-    sub: "Pas de pitch, pas de deck. Dites-nous ce que vous construisez.",
+    sub: "Pas de pitch, pas de deck. Dites-nous ce que vous voulez construire.",
     alt: "Ou écrivez directement :",
   },
 };

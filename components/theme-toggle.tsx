@@ -1,18 +1,23 @@
 "use client";
 
-import { useTheme } from "./theme-provider";
 import { motion, AnimatePresence } from "motion/react";
+import { useThemeToggle, AnimationVariant, AnimationStart } from "@/hooks/use-theme-toggle";
 
-export function ThemeToggle() {
-  const { theme, toggle } = useTheme();
+interface ThemeToggleProps {
+  variant?: AnimationVariant;
+  start?: AnimationStart;
+  blur?: boolean;
+  gifUrl?: string;
+}
+
+export function ThemeToggle({ variant = "circle", start = "center", blur = false, gifUrl = "" }: ThemeToggleProps) {
+  const { isDark, toggleTheme } = useThemeToggle({ variant, start, blur, gifUrl });
 
   return (
     <motion.button
-      onClick={toggle}
+      onClick={toggleTheme}
       whileTap={{ scale: 0.88 }}
-      aria-label={
-        theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-      }
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       style={{
         position: "relative",
         width: "36px",
@@ -30,22 +35,20 @@ export function ThemeToggle() {
     >
       {/* Track fill that slides */}
       <motion.span
-        animate={{ x: theme === "dark" ? 0 : "100%" }}
+        animate={{ x: isDark ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
         style={{
           position: "absolute",
           inset: 0,
           background: "var(--toggle-active)",
           borderRadius: "99px",
-          originX: theme === "dark" ? 0 : 1,
+          originX: isDark ? 0 : 1,
         }}
       />
 
-      {/* The thumb — morphs between a crescent and a dot */}
+      {/* Thumb — morphs between crescent and sun */}
       <motion.span
-        animate={{
-          x: theme === "dark" ? 2 : 18,
-        }}
+        animate={{ x: isDark ? 2 : 18 }}
         transition={{ type: "spring", stiffness: 500, damping: 32 }}
         style={{
           position: "relative",
@@ -62,7 +65,7 @@ export function ThemeToggle() {
         }}
       >
         <AnimatePresence mode="wait">
-          {theme === "dark" ? (
+          {isDark ? (
             <motion.svg
               key="moon"
               initial={{ scale: 0, rotate: -30 }}

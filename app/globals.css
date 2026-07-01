@@ -4,8 +4,7 @@
 /* DM Sans + DM Serif Display loaded via next/font in layout.tsx */
 
 /* ── Theme tokens ── */
-:root,
-[data-theme="light"] {
+:root {
   --bg: #f9f8f6;
   --fg: #1a1a1a;
   --muted: #666;
@@ -22,7 +21,7 @@
   --toggle-icon: #1a1a1a;
 }
 
-[data-theme="dark"] {
+.dark {
   --bg: #0b0b0b;
   --fg: #ddd8ce;
   --muted: #777;
@@ -87,11 +86,4 @@
     font-family: inherit;
   }
 
-  /* prevent FOUC on theme load */
-  html:not([data-theme]) {
-    visibility: hidden;
-  }
-  html[data-theme] {
-    visibility: visible;
-  }
 }

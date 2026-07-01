@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
+import { useTheme } from "next-themes";
 import { ThemeToggle } from "./theme-toggle";
-import { useTheme } from "./theme-provider";
+
 import Image from "next/image";
 
 type Lang = "en" | "fr";
@@ -29,18 +30,26 @@ export function Navbar({
   lang: Lang;
   setLang: (l: Lang) => void;
 }) {
-  const { theme } = useTheme();
+  const { resolvedTheme: theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const [scrolled, setScrolled] = useState(false);
   const [atBottom, setAtBottom] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 8);
-      // const distFromBottom =
-      //   document.documentElement.scrollHeight - y - window.innerHeight;
       setAtBottom(y > 40);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -49,7 +58,7 @@ export function Navbar({
 
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth >= 640) setOpen(false);
+      if (window.innerWidth >= 768) setOpen(false);
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -63,12 +72,12 @@ export function Navbar({
           opacity: 1,
           // y: atBottom ? 16 : 0,
           y: 0,
-          left: atBottom ? "50%" : 0,
-          x: atBottom ? "-50%" : "0%",
-          width: atBottom ? 920 : "100%",
-          height: atBottom ? 48 : 54,
-          paddingLeft: atBottom ? 24 : 32,
-          paddingRight: atBottom ? 24 : 32,
+          left: atBottom && !isMobile ? "50%" : 0,
+          x: atBottom && !isMobile ? "-50%" : "0%",
+          width: atBottom && !isMobile ? 920 : "100%",
+          height: atBottom && !isMobile ? 48 : 54,
+          paddingLeft: atBottom && !isMobile ? 24 : 32,
+          paddingRight: atBottom && !isMobile ? 24 : 32,
           // borderRadius: atBottom ? 12 : 0,
           borderRadius: 0,
         }}
@@ -91,7 +100,9 @@ export function Navbar({
         >
           <Image
             src={
-              theme === "dark" ? "/bly-logo-white.svg" : "/bly-logo-black.svg"
+              mounted && theme === "dark"
+                ? "/bly-logo-white.svg"
+                : "/bly-logo-black.svg"
             }
             alt="Bly"
             width={120}
@@ -101,7 +112,7 @@ export function Navbar({
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -126,9 +137,9 @@ export function Navbar({
           ))}
         </nav>
 
-        {/* Right cluster */}
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
+        {/* Right cluster — desktop */}
+        <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle blur />
 
           <button
             onClick={() => setLang(lang === "en" ? "fr" : "en")}
@@ -141,32 +152,32 @@ export function Navbar({
             href="#contact"
             className="text-[12px] font-semibold bg-(--accent) text-white rounded-sm px-3.75 py-1.75 no-underline transition-opacity duration-200 hover:opacity-85"
           >
-            {lang === "fr" ? "Travaillons" : "Let's work"}
+            {lang === "fr" ? "collaborons !" : "Let's work"}
           </a>
-
-          {/* Hamburger — mobile only */}
-          <button
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
-            className="flex sm:hidden flex-col gap-1 bg-transparent border-none cursor-pointer p-1"
-          >
-            <motion.span
-              animate={{ rotate: open ? 45 : 0, y: open ? 6 : 0 }}
-              className="block w-4.5 h-px bg-(--fg) rounded-[1px] origin-center"
-              transition={{ duration: 0.2 }}
-            />
-            <motion.span
-              animate={{ opacity: open ? 0 : 1 }}
-              className="block w-4.5 h-px bg-(--fg) rounded-[1px]"
-              transition={{ duration: 0.15 }}
-            />
-            <motion.span
-              animate={{ rotate: open ? -45 : 0, y: open ? -6 : 0 }}
-              className="block w-4.5 h-px bg-(--fg) rounded-[1px] origin-center"
-              transition={{ duration: 0.2 }}
-            />
-          </button>
         </div>
+
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-label="Menu"
+          className="flex md:hidden flex-col gap-1 bg-transparent border-none cursor-pointer p-1"
+        >
+          <motion.span
+            animate={{ rotate: open ? 45 : 0, y: open ? 6 : 0 }}
+            className="block w-4.5 h-px bg-(--fg) rounded-[1px] origin-center"
+            transition={{ duration: 0.2 }}
+          />
+          <motion.span
+            animate={{ opacity: open ? 0 : 1 }}
+            className="block w-4.5 h-px bg-(--fg) rounded-[1px]"
+            transition={{ duration: 0.15 }}
+          />
+          <motion.span
+            animate={{ rotate: open ? -45 : 0, y: open ? -6 : 0 }}
+            className="block w-4.5 h-px bg-(--fg) rounded-[1px] origin-center"
+            transition={{ duration: 0.2 }}
+          />
+        </button>
       </motion.header>
 
       {/* Scroll-to-top button */}
@@ -223,6 +234,29 @@ export function Navbar({
                 {lang === "fr" ? link.fr : link.en}
               </motion.a>
             ))}
+
+            {/* Controls */}
+            <motion.div
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: NAV_LINKS.length * 0.05 }}
+              className="flex justify-between items-center gap-3 pt-2 border-t border-(--border)"
+            >
+              <ThemeToggle blur />
+              <button
+                onClick={() => setLang(lang === "en" ? "fr" : "en")}
+                className="text-[10px] font-bold tracking-widest text-(--muted) bg-transparent border border-(--border) rounded-[3px] px-2.25 py-1 cursor-pointer transition-colors duration-200 hover:text-(--fg) hover:border-(--fg)"
+              >
+                {lang === "en" ? "FR" : "EN"}
+              </button>
+              <a
+                href="#contact"
+                onClick={() => setOpen(false)}
+                className="text-[12px] font-semibold bg-(--accent) text-white rounded-sm px-3.75 py-1.75 no-underline transition-opacity duration-200 hover:opacity-85"
+              >
+                {lang === "fr" ? "Collaborons !" : "Let's work"}
+              </a>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
