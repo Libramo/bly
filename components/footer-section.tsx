@@ -25,9 +25,13 @@ function Flip({ v, id }: { v: string; id: string }) {
 const C = {
   en: {
     footer: "Proudly  Djiboutian.",
+    services: "Services",
+    contact: "Contact",
   },
   fr: {
     footer: "Fièrement Djiboutien.",
+    services: "Services",
+    contact: "Contact",
   },
 };
 
@@ -61,6 +65,18 @@ const FooterSection = ({ lang = "en" }: { lang?: "en" | "fr" }) => {
         </a>
 
         <div className="flex items-center gap-4">
+          <a
+            href="/services"
+            className="text-[12px] text-[var(--muted-2)] hover:text-[var(--fg)] transition-colors duration-200"
+          >
+            {t.services}
+          </a>
+          <a
+            href="/contact"
+            className="text-[12px] text-[var(--muted-2)] hover:text-[var(--fg)] transition-colors duration-200"
+          >
+            {t.contact}
+          </a>
           {SOCIALS.map((s) => (
             <a
               key={s.label}

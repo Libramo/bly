@@ -11,10 +11,10 @@ import Image from "next/image";
 type Lang = "en" | "fr";
 
 const NAV_LINKS = [
-  { href: "#services", en: "Services", fr: "Services" },
+  { href: "/services", en: "Services", fr: "Services" },
   { href: "#work", en: "Portofolio", fr: "Portofolio" },
   { href: "#team", en: "Team", fr: "Équipe" },
-  { href: "#contact", en: "Contact", fr: "Contact" },
+  { href: "/contact", en: "Contact", fr: "Contact" },
   {
     href: "https://surveys.blyanalytics.com",
     en: "Surveys",
@@ -149,7 +149,7 @@ export function Navbar({
           </button>
 
           <a
-            href="#contact"
+            href="/contact"
             className="text-[12px] font-semibold bg-(--accent) text-white rounded-sm px-3.75 py-1.75 no-underline transition-opacity duration-200 hover:opacity-85"
           >
             {lang === "fr" ? "collaborons !" : "Let's work"}
@@ -250,7 +250,7 @@ export function Navbar({
                 {lang === "en" ? "FR" : "EN"}
               </button>
               <a
-                href="#contact"
+                href="/contact"
                 onClick={() => setOpen(false)}
                 className="text-[12px] font-semibold bg-(--accent) text-white rounded-sm px-3.75 py-1.75 no-underline transition-opacity duration-200 hover:opacity-85"
               >

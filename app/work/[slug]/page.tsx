@@ -1,5 +1,6 @@
 import { CaseStudyPage } from "@/components/case-study-component";
 import { PROJECTS } from "@/lib/projects";
+import { SITE_URL } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -18,6 +19,16 @@ export async function generateMetadata({
   return {
     title: `${project.title.en} — Bly Analytics`,
     description: project.oneliner.en,
+    alternates: {
+      canonical: `${SITE_URL}/work/${slug}`,
+    },
+    openGraph: {
+      title: `${project.title.en} — Bly Analytics`,
+      description: project.oneliner.en,
+      url: `${SITE_URL}/work/${slug}`,
+      siteName: "Bly Analytics",
+      type: "article",
+    },
   };
 }
 
