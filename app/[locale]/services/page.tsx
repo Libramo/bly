@@ -12,7 +12,7 @@ const COPY: Record<Lang, { title: string; description: string }> = {
   fr: {
     title: "Services — Bly Analytics",
     description:
-      "Plateformes web, tableaux de bord analytiques, digitalisation gouvernementale, tech santé, pipelines de données et automatisation documentaire — conçus pour les entreprises et institutions d'Afrique de l'Est.",
+      "Analyse de données, plateformes web, digitalisation gouvernementale, tech santé et automatisation documentaire — conseil digital conçu pour les entreprises et institutions d'Afrique de l'Est.",
   },
 };
 

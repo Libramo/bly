@@ -278,12 +278,29 @@ Priority order (highest leverage first):
    `<html lang="fr">`, `/en` renders English with `<html lang="en">`,
    language toggles land on the correct sibling URL, and
    `/work/{slug}` resolves under both. Then commit + push + deploy.
-2. **French copy targeting real search phrasing** (e.g. "analyse de
-   données Djibouti", "consultance digitale Djibouti") — deliberately
-   scoped as a separate follow-up step from `[locale]` routing (decided
-   2026-08-29): routing makes French content crawlable at all, but
-   ranking for specific phrases needs French-native copy written around
-   those concepts, not a mechanical translation. Do after routing lands.
+2. ~~French copy targeting real search phrasing~~ — **done 2026-08-29**.
+   Working phrases "conseil digital" and "analyse de données" (matching
+   the exact wording of "boite analyse de données djibouti" and
+   "conseil digital" the user is targeting) into visible French copy,
+   not just meta keywords:
+   - `lib/seo.ts` fr: site title is now "Bly Analytics — Conseil
+     Digital & Analyse de Données"; description/OG description lead
+     with "agence de conseil digital... analyse de données..."; added
+     "conseil digital Djibouti" to keywords alongside the existing
+     "analyse de données Djibouti".
+   - `app/[locale]/page.tsx` fr: `hero_sub` now says "agence de conseil
+     digital... spécialisée dans l'analyse de données..."; the
+     "Tableaux de bord analytiques" service was retitled "Analyse de
+     données & tableaux de bord" (title + body).
+   - `components/services-page.tsx` fr: intro now opens "votre
+     partenaire de conseil digital à Djibouti"; same service item
+     retitled/reworded to match.
+   - `app/[locale]/services/page.tsx` fr `generateMetadata`: description
+     now leads with "Analyse de données..." and ends "...conseil
+     digital conçu pour...".
+   - English copy intentionally untouched — not the target language for
+     these queries.
+   - `npm run build` verified clean after the pass.
 3. Use Search Console "Request Indexing" on `/`, `/en`, `/services`,
    `/en/services`, `/contact`, `/en/contact` individually once deployed,
    rather than waiting for organic recrawl.

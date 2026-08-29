@@ -31,13 +31,14 @@ const SITE_COPY: Record<
     ogLocale: "en_US",
   },
   fr: {
-    title: "Bly Analytics — Agence de Conseil Numérique",
+    title: "Bly Analytics — Conseil Digital & Analyse de Données",
     description:
-      "Bly Analytics est une agence de conseil numérique basée à Djibouti, spécialisée dans les plateformes web, les tableaux de bord analytiques et la digitalisation gouvernementale pour l'Afrique de l'Est.",
+      "Bly Analytics est une agence de conseil digital basée à Djibouti, spécialisée dans l'analyse de données, les plateformes web et la digitalisation gouvernementale pour l'Afrique de l'Est.",
     ogDescription:
-      "Agence de conseil numérique basée à Djibouti — plateformes web, tableaux de bord et digitalisation gouvernementale pour l'Afrique de l'Est.",
+      "Agence de conseil digital basée à Djibouti — analyse de données, plateformes web et digitalisation gouvernementale pour l'Afrique de l'Est.",
     keywords: [
       "Bly Analytics",
+      "conseil digital Djibouti",
       "agence de conseil numérique Djibouti",
       "analyse de données Djibouti",
       "plateformes web Afrique de l'Est",

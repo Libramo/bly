@@ -44,7 +44,7 @@ const C = {
     eyebrow: "Ce qu'on construit",
     title: "Services",
     intro:
-      "Bly Analytics prend en charge un projet dans son intégralité — de l'architecture au déploiement — pour des gouvernements, cliniques et entreprises à travers l'Afrique de l'Est. Six domaines, une seule équipe, aucun transfert.",
+      "Bly Analytics est votre partenaire de conseil digital à Djibouti : nous prenons en charge un projet dans son intégralité — de l'analyse de données à l'architecture, jusqu'au déploiement — pour des gouvernements, cliniques et entreprises à travers l'Afrique de l'Est. Six domaines, une seule équipe, aucun transfert.",
     cta: "Un projet en tête ? Contactez-nous →",
     items: [
       {
@@ -52,8 +52,8 @@ const C = {
         body: "Applications full-stack construites avec Next.js, Drizzle et Postgres. Auth multi-rôles, dashboards, systèmes de réservation et outils internes — livrés comme des logiciels de production, pas des prototypes.",
       },
       {
-        title: "Tableaux de bord analytiques",
-        body: "Dashboards KPI interactifs adossés à de vrais pipelines de données, construits avec Python/Dash ou Next.js et Recharts. Pensés pour les équipes qui veulent voir ce qui se passe réellement, pas un rapport statique.",
+        title: "Analyse de données & tableaux de bord",
+        body: "Analyse de données et dashboards KPI interactifs adossés à de vrais pipelines de données, construits avec Python/Dash ou Next.js et Recharts. Pensés pour les équipes qui veulent voir ce qui se passe réellement, pas un rapport statique.",
       },
       {
         title: "Digitalisation gouvernementale",
