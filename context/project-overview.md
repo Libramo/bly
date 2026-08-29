@@ -15,9 +15,11 @@ clients discover and vet the studio.
    communicating capability (case studies) and credibility (team,
    philosophy).
 2. Be findable — rank and get indexed for branded search ("Bly Analytics")
-   and relevant service + region terms ("government digitisation
-   Djibouti", "web platform East Africa"). Target: SEO/visibility score of
-   ~90/100 (technical + indexing + authority combined).
+   and relevant service + region terms, **in French first** ("boite
+   analyse de données Djibouti", "digitisation gouvernementale
+   Djibouti") as well as English ("government digitisation Djibouti",
+   "web platform East Africa"). Target: SEO/visibility score of ~90/100
+   (technical + indexing + authority combined).
 3. Serve both English and French audiences without degrading either
    language's discoverability or UX.
 
@@ -37,9 +39,21 @@ clients discover and vet the studio.
 - Single-page landing (`app/page.tsx`) with services, work, team, and
   contact sections
 - Expandable project cards linking to full case studies
-- Standalone `/contact` page
-- EN/FR language toggle (client-side state, not routed)
+- Standalone `/services` and `/contact` pages (added for SEO surface
+  area — see `progress-tracker.md`), each with expanded content distinct
+  from the homepage teasers to avoid duplicate-content dilution
+- EN/FR language toggle (client-side state, not routed — see
+  `architecture.md`'s i18n Model for the known gap and planned fix).
+  **French is the primary/default language** (decided 2026-08-29 —
+  target audience is Francophone East Africa); English is secondary.
 - Light/dark theme toggle, no-flash on load
+
+### Planned: `/articles`
+
+- Not started. Will use **Payload CMS** (self-hosted, TypeScript-native)
+  for content, not a local data file — decided but not yet scaffolded.
+  Supersedes the earlier Strapi decision (nothing was built against it).
+  See `progress-tracker.md` open questions.
 
 ### Case studies
 

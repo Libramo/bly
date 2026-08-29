@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { use, useRef } from "react";
 import {
   motion,
   useInView,
@@ -16,8 +16,7 @@ import { ContactSection } from "@/components/contact-section";
 import HeroSection from "@/components/hero-section";
 import ServicesSection from "@/components/services-section";
 import FooterSection from "@/components/footer-section";
-
-type Lang = "en" | "fr";
+import type { Lang } from "@/lib/i18n";
 
 /* ─── Copy ─────────────────────────────────────────────── */
 const C = {
@@ -211,23 +210,22 @@ function MagLink({
 }
 
 /* ─── Page ──────────────────────────────────────────────── */
-function BlyInner() {
-  const [lang, setLang] = useState<Lang>("en");
+function BlyInner({ lang }: { lang: Lang }) {
   const t = C[lang];
 
   return (
-    <div className="bg-[var(--bg)] text-[var(--fg)] font-sans min-h-screen overflow-x-hidden transition-colors duration-[350ms]">
-      <Navbar lang={lang} setLang={setLang} />
+    <div className="bg-(--bg) text-(--fg) font-sans min-h-screen overflow-x-hidden transition-colors duration-350">
+      <Navbar lang={lang} />
 
       <HeroSection lang={lang} />
       <ServicesSection lang={lang} />
       <WorkSection lang={lang} />
 
-      <div className="border-t border-[var(--border)] max-w-[920px] mx-auto" />
+      <div className="border-t border-(--border) max-w-230 mx-auto" />
 
       <TeamSection lang={lang} />
 
-      <div className="border-t border-[var(--border)] max-w-[920px] mx-auto" />
+      <div className="border-t border-(--border) max-w-230 mx-auto" />
 
       <ContactSection lang={lang} />
 
@@ -236,10 +234,15 @@ function BlyInner() {
   );
 }
 
-export default function BlyPage() {
+export default function BlyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = use(params) as { locale: Lang };
   return (
     <ThemeProvider>
-      <BlyInner />
+      <BlyInner lang={locale} />
     </ThemeProvider>
   );
 }

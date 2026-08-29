@@ -1,18 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { motion } from "motion/react";
-import { useSearchParams } from "next/navigation";
 import { ContactSection } from "./contact-section";
 import FooterSection from "./footer-section";
-
-type Lang = "en" | "fr";
-
-const NAV_COPY = {
-  en: { home: "← Home", lang: "FR" },
-  fr: { home: "← Accueil", lang: "EN" },
-};
+import { Navbar } from "./navbar";
+import type { Lang } from "@/lib/i18n";
 
 const C = {
   en: {
@@ -41,53 +33,19 @@ function FadeUp({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ContactPage() {
-  const searchParams = useSearchParams();
-  const [lang, setLang] = useState<Lang>(
-    (searchParams.get("lang") as Lang) ?? "en",
-  );
+export function ContactPage({ lang }: { lang: Lang }) {
   const t = C[lang];
-  const nav = NAV_COPY[lang];
 
   return (
     <div className="bg-(--bg) text-(--fg) font-sans min-h-screen">
-      <motion.header
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="sticky top-0 z-40 flex items-center justify-between px-8 h-13.5 border-b border-(--border) bg-(--nav-bg-scrolled) backdrop-blur-[14px]"
-      >
-        <Link
-          href="/"
-          className="font-serif text-[21px] tracking-[-0.025em] text-(--fg) no-underline"
-        >
-          Bly
-        </Link>
-        <div className="flex gap-3 items-center">
-          <button
-            onClick={() => setLang((l) => (l === "en" ? "fr" : "en"))}
-            className="text-[10px] font-bold tracking-[0.1em] text-[var(--muted)] bg-transparent border border-[var(--border)] rounded-[3px] px-[9px] py-1 cursor-pointer"
-          >
-            {nav.lang}
-          </button>
-          <Link
-            href="/"
-            className="text-[12px] text-(--muted) no-underline border border-(--border) rounded-sm px-3.25 py-1.5"
-          >
-            {nav.home}
-          </Link>
-        </div>
-      </motion.header>
+      <Navbar lang={lang} />
 
-      <div className="max-w-[720px] mx-auto px-8 pt-20">
+      <div className="max-w-230 mx-auto px-8 pt-20">
         <FadeUp>
-          <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-[var(--accent)] mb-[0.6rem]">
-            {t.eyebrow}
-          </p>
-          <h1 className="font-serif text-[clamp(32px,5vw,52px)] tracking-[-0.03em] text-[var(--fg)] leading-[1.05] mb-5">
+          <h1 className="font-serif text-[clamp(32px,5vw,52px)] tracking-[-0.03em] text-(--fg) leading-[1.05] mb-5">
             {t.title}
           </h1>
-          <p className="text-[16px] text-[var(--muted)] leading-[1.85] max-w-[560px] mb-4">
+          <p className="text-[16px] text-(--muted) leading-[1.85] max-w-140 mb-4">
             {t.intro}
           </p>
         </FadeUp>

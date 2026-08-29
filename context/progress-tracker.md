@@ -4,8 +4,15 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-- SEO improvement initiative — In Progress (audit complete, fixes not
-  yet started)
+- SEO improvement initiative — In Progress. All planned fixes for this
+  round (canonical/www consistency, `/services` + `/contact` pages,
+  internal linking, `data-scroll-behavior` fix) are complete and were
+  actually committed + pushed in `01b7c5f` ("fix SEO issues",
+  2026-07-24) — **this file just never got updated to say so.**
+  Live-confirmed 2026-08-29 (`/services` loads correctly in prod). The
+  "not deployed" language below this line is stale; ignore it. Real
+  remaining blocker is indexing/authority (zero backlinks, no crawlable
+  French content), not a pending deploy.
 
 ## Current Goal
 
@@ -41,7 +48,9 @@ Update this file after every meaningful implementation change.
 
 ## In Progress
 
-- None — the www/canonical fix below is done and verified, ready to deploy.
+- None — all session 2/3/4 work below is done and build-verified.
+  Blocked only on the user committing + pushing + deploying (their call,
+  not yet given).
 
 ## Completed (session 2, 2026-07-24)
 
@@ -115,53 +124,200 @@ Update this file after every meaningful implementation change.
 - `npm run build` passes with all changes (verified after the navbar edit
   too — routes `/`, `/services`, `/contact`, `/work/[slug]` all generate
   as static).
-- **Still not deployed.** User wants to review `/services` and `/contact`
-  in the browser themselves before anything ships.
+- **Still not deployed.** User reviewed `/services` and `/contact`
+  themselves in the browser (per their request) rather than having
+  Claude drive an automated browser check.
+
+## Completed (session 4, 2026-07-24)
+
+- Fixed a Next.js dev warning that surfaced once the navbar started
+  doing real route transitions (see session 3): `html { scroll-behavior:
+  smooth }` in `globals.css` (there for `#work`/`#team` anchor scroll)
+  needed `data-scroll-behavior="smooth"` on `<html>` in `app/layout.tsx`
+  so Next's router accounts for it during route transitions. One
+  attribute, no behavior change.
+- Full context-file sync pass: fixed a real stale-doc bug in
+  `architecture.md` (invariant 5 still told future sessions to keep
+  canonical URLs on the bare domain — the exact bug already fixed in
+  code). Updated `architecture.md`, `project-overview.md`, and this file
+  to reflect current reality throughout.
+- `npm run build` re-verified clean after the `data-scroll-behavior` fix.
+- Still not deployed — blocked only on user's go-ahead to commit.
+
+## Completed (session 5, 2026-08-29)
+
+- **`[locale]` routing implemented** — the deferred i18n restructure
+  (see session 4's Open Questions) is done. `/` now serves real,
+  server-rendered French markup by default; `/en` serves English. Full
+  detail:
+  - `proxy.ts` added at project root (Next.js 16's `middleware.ts`
+    replacement — confirmed via docs check that the project is actually
+    on `next@16.2.4`, not "15" as this file previously said; also fixed
+    in `architecture.md`/`code-standards.md`). Rewrites any request not
+    already under `/en` to `/fr<path>` internally.
+  - Every route moved under `app/[locale]/` (`page.tsx`, `layout.tsx`,
+    `services/page.tsx`, `contact/page.tsx`, `work/[slug]/page.tsx`,
+    `work/page.tsx`). `robots.ts`, `sitemap.ts`, `opengraph-image.tsx`
+    stay at the true root (not per-locale).
+  - New `lib/i18n.ts` — shared `Lang` type, `LOCALES`, `DEFAULT_LOCALE`,
+    `localizedHref`, `otherLocale`. Replaced the 5 separate local
+    `type Lang = "en" | "fr"` declarations that used to live in
+    `page.tsx`, `navbar.tsx`, `case-study-component.tsx`,
+    `services-page.tsx`, `contact-page.tsx`.
+  - `lang` is now derived from the URL everywhere — `useSearchParams()`
+    + `?lang=` seeding removed from `CaseStudyPage`, `ServicesPage`,
+    `ContactPage`; the homepage's `useState<Lang>("en")` replaced with
+    `use(params)`. Language toggles (`Navbar` + the 3 standalone-page
+    headers) are now real `<Link>` navigations to the sibling-locale
+    URL, not in-memory flips.
+  - `lib/seo.ts`'s `siteMetadata` became `getSiteMetadata(locale)` with
+    per-locale copy, `openGraph.locale`/`alternateLocale`, and
+    `alternates.languages` (hreflang). Same pattern added to
+    `services`, `contact`, `work/[slug]` `generateMetadata` — the
+    `[slug]` route's metadata also stopped hardcoding `.en` fields
+    regardless of viewer language (a real bug fixed along the way).
+    `sitemap.ts` now emits `alternates.languages` per URL.
+  - `npm run build` verified clean: both locale trees generate
+    (`/fr`, `/en` internally; `/`, `/en` externally) for all routes,
+    including the full `{locale, slug}` cross product for case studies.
+    `npm run lint` clean except pre-existing issues unrelated to this
+    change (React Compiler `set-state-in-effect` warnings in
+    `navbar.tsx`/`footer-section.tsx`/`hooks/use-theme-toggle.ts`, and
+    a few pre-existing unused-import warnings) — none introduced here.
+  - Also swept every file touched this session for Tailwind
+    canonical-class lint suggestions (`text-[var(--x)]` →
+    `text-(--x)`, and numeric arbitrary values with an exact scale
+    equivalent like `max-w-[920px]` → `max-w-230`) per explicit user
+    request to always fix these when linting surfaces them.
+  - **Not done** (explicit separate follow-up, decided this session):
+    writing actual French copy targeting real search phrasing — this
+    change reused the existing `{ en, fr }` copy as-is. See Next Up.
+  - Fixed a bug the user caught during manual verification: toggling
+    locale (`/` ↔ `/en`) logged a browser warning — "Encountered a
+    script tag while rendering React component." Root cause, confirmed
+    by elimination testing (user removed `<ThemeProvider>` and the
+    warning persisted, pointing straight at our own script — an earlier
+    theory blaming `next-themes`' internal script alone was incomplete):
+    `app/[locale]/layout.tsx` now legitimately re-renders on the client
+    whenever the locale segment changes (the old static `app/layout.tsx`
+    never re-rendered for in-app navigation), and `next/script`'s
+    `strategy="beforeInteractive"` is documented to only work by
+    injecting into the *initial* server-rendered HTML stream — it has
+    no valid re-entry path when a layout using it gets re-spliced into
+    an already-interactive page via a client-side route change, so
+    React flags the raw script insertion.
+    - The manual no-flash theme script was both the proven cause and
+      redundant (`next-themes`'s own `<ThemeProvider>`, already used
+      here, injects an equivalent blocking script itself) — removed
+      outright rather than just changing its strategy.
+    - The JSON-LD structured-data script is still needed (SEO, from
+      `01b7c5f`) and was kept, but converted from a raw `<script>` to
+      `next/script`'s `<Script>` with the default (non-`beforeInteractive`)
+      strategy, which uses an id-deduped client loader that tolerates
+      being re-spliced on navigation — so it doesn't hit the same bug.
+    - **Confirmed** (via the browser's own error overlay, pointing
+      straight at `components/theme-provider.tsx:10` → `NextThemesProvider`):
+      `next-themes`' own internal script independently triggers the
+      identical warning on locale toggle, by the same mechanism — it
+      renders a real `<script>` JSX element (not an imperative
+      `document.createElement` insertion like `next/script`'s
+      non-`beforeInteractive` strategies use), so it has no way to
+      survive being re-spliced into the page when `[locale]` changes.
+      There's no prop to disable it, and no stable `next-themes` release
+      fixes it (0.4.6 is latest; only an unreleased 1.0.0-beta.0
+      exists) — it's a widely-reported open upstream issue (also hit by
+      shadcn/ui, heroui), not specific to this repo.
+    - **Decision (2026-08-29): leave it.** Purely a console warning, no
+      functional/user-facing effect — theme still applies correctly on
+      every load and toggle. The real fix would mean replacing
+      `next-themes` entirely (reimplementing theme
+      state/toggle/system-detection/cross-tab sync across `navbar.tsx`,
+      `footer-section.tsx`, `hooks/use-theme-toggle.ts`, and
+      `theme-provider.tsx`, using `useServerInsertedHTML` for the
+      flash-prevention script) — real surface area not justified for a
+      cosmetic issue. Revisit only if `next-themes` ships a fix, or if
+      this ever becomes more than cosmetic.
+    - Rebuilt clean after the fix.
+  - **User-driven design change**: `/services`, `/contact`, and
+    `/work/[slug]` switched from their own lightweight self-contained
+    headers to the shared homepage `Navbar`, for consistent navigation
+    across every page (user's explicit call — the standalone-header
+    convention documented in `architecture.md` is now superseded).
+    - `Navbar`'s `NAV_LINKS` `#work`/`#team` hash anchors only resolve
+      on the homepage — added a `navHref` helper in `navbar.tsx` so
+      those links go through the homepage first (`/#work`, `/en#work`)
+      when clicked from any other page, instead of trying to scroll a
+      section that doesn't exist on the current page.
+    - **Caught and fixed a real bug**: `Navbar`'s locale-toggle was
+      hardcoded to always target `/` (correct back when it only ever
+      lived on the homepage) — after the swap, toggling locale on
+      `/services` dropped the user to the homepage instead of
+      `/en/services`. Fixed by adding `stripLocalePrefix` to
+      `lib/i18n.ts` and having `Navbar` read the current path via
+      `usePathname()`, so the toggle now preserves whatever page you're
+      on across both `/services`/`/contact` and `/work/{slug}`.
+    - Removed the now-dead `NAV_COPY` objects and unused
+      `otherLocale`/`Link` imports from `services-page.tsx`,
+      `contact-page.tsx`, `case-study-component.tsx` after the swap.
+    - No layout clearance issue: `Navbar` is `position: fixed` (unlike
+      the old `sticky` self-contained headers), but these pages' content
+      already had `pt-20` (80px) top padding, comfortably more than
+      `Navbar`'s 54px un-scrolled height — left unchanged.
+    - `npm run build` and a targeted `eslint` pass on every touched file
+      both clean (only the pre-existing, unrelated `setMounted`-in-effect
+      warning remains).
+  - Not yet committed/pushed — user will start the server and verify
+    manually before that happens.
 
 ## Next Up
 
 Priority order (highest leverage first):
 
-1. Check Google Search Console coverage report directly — confirm
-   whether pages are "Discovered, not indexed" (patience problem) vs.
-   "Crawled, not indexed" (quality/rendering problem) vs. never
-   submitted correctly. This determines whether remaining steps are
-   urgent or just need time.
-2. Decide and implement an i18n routing strategy so French content gets
-   its own indexable URL (see Open Questions — this is an architecture
-   decision, not a quick fix).
-3. Fix `<html lang="en">` to reflect actual active language once i18n
-   routing is settled.
-4. Add per-route metadata to `/work/[slug]` (title/description per
-   project) if not already present — verify first.
+1. **User to manually verify** the `[locale]` migration locally
+   (`npm run dev` or `npm run start`) — check `/` renders French with
+   `<html lang="fr">`, `/en` renders English with `<html lang="en">`,
+   language toggles land on the correct sibling URL, and
+   `/work/{slug}` resolves under both. Then commit + push + deploy.
+2. **French copy targeting real search phrasing** (e.g. "analyse de
+   données Djibouti", "consultance digitale Djibouti") — deliberately
+   scoped as a separate follow-up step from `[locale]` routing (decided
+   2026-08-29): routing makes French content crawlable at all, but
+   ranking for specific phrases needs French-native copy written around
+   those concepts, not a mechanical translation. Do after routing lands.
+3. Use Search Console "Request Indexing" on `/`, `/en`, `/services`,
+   `/en/services`, `/contact`, `/en/contact` individually once deployed,
+   rather than waiting for organic recrawl.
+4. Re-check the Search Console coverage report ~1-2 weeks post-deploy —
+   confirm "Page with redirect" and "Alternate canonical" exclusions
+   actually cleared, and that the new `/en/*` tree starts getting
+   indexed alongside the `fr` root tree.
 5. Get 2-3 real backlinks (LinkedIn post linking to the site, a
-   directory listing, a partner mention).
-6. Add 1-2 more content pages / expand existing copy for long-tail
-   service+region keyword coverage (e.g. a `/services` page).
-7. Reconcile sitemap drift: deployed `sitemap.xml` includes `/contact`,
-   but local `app/sitemap.ts` currently only lists `/` + project slugs —
-   confirm which is source of truth (there are uncommitted local changes
-   to `app/sitemap.ts` per git status).
+   directory listing, a partner mention) — still zero, still the
+   biggest lever for ranking (not just indexing) that hasn't been
+   touched.
+6. `/articles` via Payload CMS — not started, no schema/integration yet
+   (swapped from Strapi 2026-08-29, nothing was built against it).
 
 ## Open Questions
 
-- **i18n routing approach**: recommended direction (not yet started) is
-  a native Next.js `app/[locale]/...` dynamic segment — not next-intl
-  (its message-catalog machinery is overkill for this site's inline
+- **i18n routing approach**: direction decided — a native Next.js
+  `app/[locale]/...` dynamic segment — not next-intl (its
+  message-catalog machinery is overkill for this site's inline
   `{ en, fr }` copy objects) and not physically duplicated `/fr` folders
   (duplication risk as route count grows, especially once `/articles`
   lands). One route file per page serves both locales via
   `params.locale`, reusing existing components (`lang` prop already
-  supported everywhere). User explicitly deferred starting this — "not
-  for now."
-- **Articles / `/articles` route**: user will use **Strapi** (headless
-  CMS) for article content, not a local `lib/articles.ts` data file like
-  `lib/projects.ts`. Strapi has native i18n (locale variants per content
-  type), which pairs naturally with the `[locale]` routing plan above —
-  worth revisiting the i18n routing decision once `/articles` is
-  actually being built, since Strapi's locale param can drive
-  `params.locale` directly. Not started — no schema, no integration, no
-  route yet.
+  supported everywhere). **URL shape decided 2026-08-29**: `/` (root,
+  no prefix) serves French as the default locale; English lives under
+  an explicit `/en` prefix (`/en`, `/en/services`, etc.). Root keeps
+  the URL that already has whatever indexing history exists so far.
+  Not yet implemented.
+- **Articles / `/articles` route**: user will use **Payload CMS**
+  (self-hosted, TypeScript-native) for article content, not a local
+  `lib/articles.ts` data file like `lib/projects.ts`. Payload has
+  built-in localization support per collection, which pairs with the
+  `[locale]` routing plan above. Not started — no schema, no
+  integration, no route yet.
 - Is Search Console actually verified and property-level (domain vs.
   URL-prefix) set up correctly? `CLAUDE.md` notes "Search Console
   submitted" but audit couldn't confirm current coverage status from
@@ -172,10 +328,41 @@ Priority order (highest leverage first):
 
 ## Architecture Decisions
 
-- None yet specific to SEO — pending the i18n routing decision above.
+- Canonical host is `https://www.blyanalytics.com` (with `www`) —
+  matches Vercel's actual 308 redirect target for the bare domain.
+  Centralized as `SITE_URL` in `lib/seo.ts`; nothing else should
+  hardcode either domain string.
+- Standalone pages (`/services`, `/contact`, `/work/[slug]`) use a
+  lightweight self-contained header + `?lang=`-seeded state, not the
+  full homepage `Navbar` — established by `CaseStudyPage` originally,
+  now the explicit convention for all non-homepage routes.
+- Navbar "Services"/"Contact" links and both "Let's work" CTAs go to
+  the real `/services` and `/contact` pages, not homepage anchors — user
+  chose the stronger internal-linking SEO signal over preserving
+  smooth-scroll-from-nav UX. `#work`/`#team` remain anchors.
+- i18n routing: when implemented, use a native `app/[locale]/...`
+  dynamic segment, not next-intl and not duplicated `/fr` folders (see
+  Open Questions for reasoning). French is the default/primary locale
+  (decided 2026-08-29). Not started.
+- `/articles` content will come from Payload CMS (self-hosted,
+  TypeScript-native), not a local `lib/articles.ts` data file. Swapped
+  from Strapi 2026-08-29 — nothing was built against Strapi. Not
+  started.
 
 ## Session Notes
 
+- **2026-08-29** — Live re-check (`WebSearch` + `WebFetch`, not the
+  local build): `site:blyanalytics.com` returns **zero** results — worse
+  than the 2/15-indexed state found on 2026-07-24, and confirms none of
+  session 2-4's fixes are live yet (still uncommitted). Searching "boite
+  analyse de données djibouti" surfaces nothing related to Bly. Fetched
+  the live homepage directly: renders English by default (hero "We
+  don't ship features. We ship outcomes."), confirming the `lang="en"`
+  default state and hardcoded `<html lang="en">` are exactly why no
+  French text exists for Google to match against a French query.
+  Decided in this session: French becomes the primary/default language,
+  and Payload CMS replaces Strapi for the still-unstarted `/articles`
+  work. Neither is implemented yet — docs updated, code untouched.
 - Audit source: live fetch of `https://blyanalytics.com`,
   `/robots.txt`, `/sitemap.xml`, plus local `app/layout.tsx` and
   `app/sitemap.ts`. Full findings summarized above under "Completed."

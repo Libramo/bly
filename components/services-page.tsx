@@ -1,17 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { useSearchParams } from "next/navigation";
 import FooterSection from "./footer-section";
-
-type Lang = "en" | "fr";
-
-const NAV_COPY = {
-  en: { home: "← Home", lang: "FR" },
-  fr: { home: "← Accueil", lang: "EN" },
-};
+import { Navbar } from "./navbar";
+import { localizedHref, type Lang } from "@/lib/i18n";
 
 const C = {
   en: {
@@ -100,53 +93,22 @@ function FadeUp({
   );
 }
 
-export function ServicesPage() {
-  const searchParams = useSearchParams();
-  const [lang, setLang] = useState<Lang>(
-    (searchParams.get("lang") as Lang) ?? "en",
-  );
+export function ServicesPage({ lang }: { lang: Lang }) {
   const t = C[lang];
-  const nav = NAV_COPY[lang];
 
   return (
     <div className="bg-(--bg) text-(--fg) font-sans min-h-screen">
-      <motion.header
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="sticky top-0 z-40 flex items-center justify-between px-8 h-13.5 border-b border-(--border) bg-(--nav-bg-scrolled) backdrop-blur-[14px]"
-      >
-        <Link
-          href="/"
-          className="font-serif text-[21px] tracking-[-0.025em] text-(--fg) no-underline"
-        >
-          Bly
-        </Link>
-        <div className="flex gap-3 items-center">
-          <button
-            onClick={() => setLang((l) => (l === "en" ? "fr" : "en"))}
-            className="text-[10px] font-bold tracking-[0.1em] text-[var(--muted)] bg-transparent border border-[var(--border)] rounded-[3px] px-[9px] py-1 cursor-pointer"
-          >
-            {nav.lang}
-          </button>
-          <Link
-            href="/"
-            className="text-[12px] text-(--muted) no-underline border border-(--border) rounded-sm px-3.25 py-1.5"
-          >
-            {nav.home}
-          </Link>
-        </div>
-      </motion.header>
+      <Navbar lang={lang} />
 
-      <article className="max-w-[720px] mx-auto px-8 pt-20 pb-16">
+      <article className="max-w-180 mx-auto px-8 pt-20 pb-16">
         <FadeUp delay={0.05}>
-          <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-[var(--accent)] mb-[0.6rem]">
+          <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-(--accent) mb-[0.6rem]">
             {t.eyebrow}
           </p>
-          <h1 className="font-serif text-[clamp(32px,5vw,52px)] tracking-[-0.03em] text-[var(--fg)] leading-[1.05] mb-5">
+          <h1 className="font-serif text-[clamp(32px,5vw,52px)] tracking-[-0.03em] text-(--fg) leading-[1.05] mb-5">
             {t.title}
           </h1>
-          <p className="text-[16px] text-[var(--muted)] leading-[1.85] max-w-[560px] mb-16">
+          <p className="text-[16px] text-(--muted) leading-[1.85] max-w-140 mb-16">
             {t.intro}
           </p>
         </FadeUp>
@@ -154,10 +116,10 @@ export function ServicesPage() {
         <div className="flex flex-col gap-10">
           {t.items.map((item, i) => (
             <FadeUp key={item.title} delay={0.08 + i * 0.04}>
-              <h2 className="text-[16px] font-semibold text-[var(--fg)] mb-2">
+              <h2 className="text-[16px] font-semibold text-(--fg) mb-2">
                 {item.title}
               </h2>
-              <p className="text-[14px] text-[var(--muted)] leading-[1.8] max-w-[560px]">
+              <p className="text-[14px] text-(--muted) leading-[1.8] max-w-140">
                 {item.body}
               </p>
             </FadeUp>
@@ -166,8 +128,8 @@ export function ServicesPage() {
 
         <FadeUp delay={0.1}>
           <Link
-            href="/contact"
-            className="inline-block mt-16 text-[14px] font-semibold text-[var(--accent)] no-underline border-b border-[var(--accent-subtle)] pb-[2px]"
+            href={localizedHref(lang, "/contact")}
+            className="inline-block mt-16 text-[14px] font-semibold text-(--accent) no-underline border-b border-(--accent-subtle) pb-0.5"
           >
             {t.cta}
           </Link>

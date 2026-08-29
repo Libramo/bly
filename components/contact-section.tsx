@@ -28,7 +28,7 @@ export function ContactSection({ lang = "en" }: { lang?: "en" | "fr" }) {
     <section
       id="contact"
       ref={ref}
-      className="max-w-[920px] mx-auto px-10 pt-8 pb-28"
+      className="max-w-230 mx-auto px-10 pt-8 pb-28"
     >
       <div
         // className="grid gap-20 items-start"

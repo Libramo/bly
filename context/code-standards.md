@@ -25,8 +25,10 @@
   file because it owns the `lang` toggle state used across every
   section. Don't split it purely for the server/client convention; only
   split it if a section grows unwieldy on its own terms.
-- `[slug]` routes use async `params` (Next.js 15 requirement) — always
-  `await params` before use.
+- Dynamic routes (`[slug]`, `[locale]`) use async `params` (Next.js 15+
+  requirement, project is on 16.2.4) — always `await params` before use
+  in server components; in the one "use client" exception (`page.tsx`),
+  unwrap with React's `use(params)` instead.
 - Any new route should export its own `Metadata` (or `generateMetadata`)
   — do not rely solely on the root layout's defaults for pages that have
   distinct content (this is a current SEO gap on `/work/[slug]`, see

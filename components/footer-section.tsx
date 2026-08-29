@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
+import { localizedHref, type Lang } from "@/lib/i18n";
 
 function Flip({ v, id }: { v: string; id: string }) {
   return (
@@ -43,7 +44,7 @@ const SOCIALS = [
   { label: "X", href: "https://x.com/" },
 ];
 
-const FooterSection = ({ lang = "en" }: { lang?: "en" | "fr" }) => {
+const FooterSection = ({ lang = "fr" }: { lang?: Lang }) => {
   const { resolvedTheme: theme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -51,8 +52,8 @@ const FooterSection = ({ lang = "en" }: { lang?: "en" | "fr" }) => {
   return (
     <>
       {/* ── FOOTER ── */}
-      <footer className="border-t border-[var(--border)] px-8 py-6 flex items-center justify-between max-w-230 mx-auto">
-        <a href={"/"}>
+      <footer className="border-t border-(--border) px-8 py-6 flex items-center justify-between max-w-230 mx-auto">
+        <a href={localizedHref(lang, "/")}>
           <Image
             src={
               mounted && theme === "dark" ? "/bly-logo-white.svg" : "/bly-logo-black.svg"
@@ -66,14 +67,14 @@ const FooterSection = ({ lang = "en" }: { lang?: "en" | "fr" }) => {
 
         <div className="flex items-center gap-4">
           <a
-            href="/services"
-            className="text-[12px] text-[var(--muted-2)] hover:text-[var(--fg)] transition-colors duration-200"
+            href={localizedHref(lang, "/services")}
+            className="text-[12px] text-(--muted-2) hover:text-(--fg) transition-colors duration-200"
           >
             {t.services}
           </a>
           <a
-            href="/contact"
-            className="text-[12px] text-[var(--muted-2)] hover:text-[var(--fg)] transition-colors duration-200"
+            href={localizedHref(lang, "/contact")}
+            className="text-[12px] text-(--muted-2) hover:text-(--fg) transition-colors duration-200"
           >
             {t.contact}
           </a>
@@ -83,14 +84,14 @@ const FooterSection = ({ lang = "en" }: { lang?: "en" | "fr" }) => {
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[12px] text-[var(--muted-2)] hover:text-[var(--fg)] transition-colors duration-200"
+              className="text-[12px] text-(--muted-2) hover:text-(--fg) transition-colors duration-200"
             >
               {s.label}
             </a>
           ))}
         </div>
 
-        <span className="text-[12px] text-[var(--muted-2)]">
+        <span className="text-[12px] text-(--muted-2)">
           <Flip v={t.footer} id={"ft" + lang} />
         </span>
       </footer>

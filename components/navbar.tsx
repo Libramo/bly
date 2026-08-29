@@ -2,13 +2,18 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from "next-themes";
 import { ThemeToggle } from "./theme-toggle";
+import {
+  localizedHref,
+  otherLocale,
+  stripLocalePrefix,
+  type Lang,
+} from "@/lib/i18n";
 
 import Image from "next/image";
-
-type Lang = "en" | "fr";
 
 const NAV_LINKS = [
   { href: "/services", en: "Services", fr: "Services" },
@@ -23,13 +28,17 @@ const NAV_LINKS = [
   },
 ];
 
-export function Navbar({
-  lang,
-  setLang,
-}: {
-  lang: Lang;
-  setLang: (l: Lang) => void;
-}) {
+// "#work"/"#team" only exist on the homepage — used from any other page
+// they must resolve back to the homepage first, in the current locale.
+function navHref(lang: Lang, href: string) {
+  if (href.startsWith("#")) return `${localizedHref(lang, "/")}${href}`;
+  if (href.startsWith("/")) return localizedHref(lang, href);
+  return href;
+}
+
+export function Navbar({ lang }: { lang: Lang }) {
+  const pathname = usePathname();
+  const toggleHref = localizedHref(otherLocale(lang), stripLocalePrefix(pathname));
   const { resolvedTheme: theme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -95,7 +104,7 @@ export function Navbar({
       >
         {/* Logo */}
         <Link
-          href="/"
+          href={localizedHref(lang, "/")}
           className="font-serif text-[22px] tracking-[-0.025em] text-(--fg) no-underline leading-none"
         >
           <Image
@@ -116,7 +125,7 @@ export function Navbar({
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={navHref(lang, link.href)}
               onClick={() => setActive(link.href)}
               {...(link.external
                 ? { target: "_blank", rel: "noopener noreferrer" }
@@ -141,15 +150,15 @@ export function Navbar({
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle blur />
 
-          <button
-            onClick={() => setLang(lang === "en" ? "fr" : "en")}
+          <Link
+            href={toggleHref}
             className="text-[10px] font-bold tracking-widest text-(--muted) bg-transparent border border-(--border) rounded-[3px] px-2.25 py-1 cursor-pointer transition-colors duration-200 hover:text-(--fg) hover:border-(--fg)"
           >
             {lang === "en" ? "FR" : "EN"}
-          </button>
+          </Link>
 
           <a
-            href="/contact"
+            href={localizedHref(lang, "/contact")}
             className="text-[12px] font-semibold bg-(--accent) text-white rounded-sm px-3.75 py-1.75 no-underline transition-opacity duration-200 hover:opacity-85"
           >
             {lang === "fr" ? "collaborons !" : "Let's work"}
@@ -221,7 +230,7 @@ export function Navbar({
             {NAV_LINKS.map((link, i) => (
               <motion.a
                 key={link.href}
-                href={link.href}
+                href={navHref(lang, link.href)}
                 onClick={() => {
                   setActive(link.href);
                   setOpen(false);
@@ -243,14 +252,15 @@ export function Navbar({
               className="flex justify-between items-center gap-3 pt-2 border-t border-(--border)"
             >
               <ThemeToggle blur />
-              <button
-                onClick={() => setLang(lang === "en" ? "fr" : "en")}
+              <Link
+                href={toggleHref}
+                onClick={() => setOpen(false)}
                 className="text-[10px] font-bold tracking-widest text-(--muted) bg-transparent border border-(--border) rounded-[3px] px-2.25 py-1 cursor-pointer transition-colors duration-200 hover:text-(--fg) hover:border-(--fg)"
               >
                 {lang === "en" ? "FR" : "EN"}
-              </button>
+              </Link>
               <a
-                href="/contact"
+                href={localizedHref(lang, "/contact")}
                 onClick={() => setOpen(false)}
                 className="text-[12px] font-semibold bg-(--accent) text-white rounded-sm px-3.75 py-1.75 no-underline transition-opacity duration-200 hover:opacity-85"
               >

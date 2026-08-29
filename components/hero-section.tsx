@@ -257,7 +257,7 @@ const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
                 delay: 0.18 + i * 0.09,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className={`block ${accent ? "text-[var(--accent)]" : "text-[var(--fg)]"} ${indent ? "pl-12" : ""}`}
+              className={`block ${accent ? "text-(--accent)" : "text-(--fg)"} ${indent ? "pl-12" : ""}`}
             >
               <Flip v={t[k as keyof typeof t] as string} id={k + lang} />
             </motion.span>
@@ -268,7 +268,7 @@ const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.55 }}
-          className="text-[15px] leading-[1.85] text-[var(--muted)] max-w-[500px] mb-10"
+          className="text-[15px] leading-[1.85] text-(--muted) max-w-125 mb-10"
         >
           <Flip v={t.hero_sub} id={"hsub" + lang} />
         </motion.p>
@@ -277,7 +277,7 @@ const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.72, duration: 0.4 }}
-          className="flex gap-[10px] flex-wrap"
+          className="flex gap-2.5 flex-wrap"
         >
           <MagLink href="#contact" primary>
             <Flip v={t.cta1} id={"c1" + lang} />
