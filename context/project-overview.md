@@ -2,7 +2,7 @@
 
 ## Overview
 
-Bly is a studio landing site for a 4-person digital consultancy based in
+Bly is a studio landing site for a small digital consultancy based in
 Djibouti. It sells digital services — web platforms, analytics dashboards,
 government digitisation, healthcare tech, data pipelines, document
 automation — to East African businesses and government clients. The site

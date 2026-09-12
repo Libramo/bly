@@ -2,7 +2,7 @@
 
 ## What is Bly
 
-A studio landing site for a 4-person team based in Djibouti. Sells digital services (web platforms, dashboards, gov digitisation, healthcare tech, data pipelines, document automation) to East African businesses and government clients. Bilingual EN/FR throughout.
+A studio landing site for a small team based in Djibouti. Sells digital services (web platforms, dashboards, gov digitisation, healthcare tech, data pipelines, document automation) to East African businesses and government clients. Bilingual EN/FR throughout.
 
 ---
 
@@ -131,7 +131,7 @@ CONTACT_FROM_EMAIL=Bly <noreply@bly.dj>
 ## Team section (`components/team-section.tsx`)
 
 - **No real names** — intentional design decision
-- Structure: manifesto wall (4 numbered statements) → anonymous role cards (4 roles with skill tags)
+- Structure: manifesto wall (4 numbered statements) → anonymous capability cards (grouped skill tags, not 1:1 with headcount)
 - All copy self-contained in the component (not in `page.tsx`)
 - To add real names later: add `name?: string` to the role card data shape
 
@@ -172,8 +172,8 @@ CONTACT_FROM_EMAIL=Bly <noreply@bly.dj>
 
 ## To add a new team member
 
-1. Add role + tags to `ROLES` in `components/team-section.tsx`
-2. Add manifesto line if the team grows beyond 4
+1. Add tags to the relevant group in `ROLES` in `components/team-section.tsx` (or add a new group if it's a genuinely new capability area)
+2. Add a manifesto line if the team's story changes meaningfully
 
 ---
 

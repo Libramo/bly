@@ -42,7 +42,7 @@ const MANIFESTO = {
     {
       num: "03",
       bold: "On maîtrise toute la stack.",
-      sub: "Design, backend, data — quatre personnes, zéro délai de transmission.",
+      sub: "Design, backend, data — petite équipe, zéro délai de transmission.",
     },
     {
       num: "04",
@@ -55,45 +55,51 @@ const MANIFESTO = {
 const ROLES = {
   en: [
     {
-      title: "Full-stack engineer",
+      title: "Engineering",
       tags: ["Next.js", "TypeScript", "Drizzle", "Better Auth"],
       icon: "⬡",
     },
     {
-      title: "UI/UX designer",
+      title: "Design",
       tags: ["Figma", "shadcn/ui", "motion/react", "Tailwind"],
       icon: "⬡",
     },
     {
-      title: "Data engineer",
-      tags: ["Python", "Pandas", "Plotly", "ETL / scraping"],
-      icon: "⬡",
-    },
-    {
-      title: "Project lead",
-      tags: ["Gov sector", "Healthcare", "Strategy", "Delivery"],
+      title: "Data & delivery",
+      tags: [
+        "Python",
+        "Pandas",
+        "Plotly",
+        "ETL / scraping",
+        "Gov sector",
+        "Healthcare",
+        "Strategy",
+      ],
       icon: "⬡",
     },
   ],
   fr: [
     {
-      title: "Ingénieur full-stack",
+      title: "Ingénierie",
       tags: ["Next.js", "TypeScript", "Drizzle", "Better Auth"],
       icon: "⬡",
     },
     {
-      title: "Designer UI/UX",
+      title: "Design",
       tags: ["Figma", "shadcn/ui", "motion/react", "Tailwind"],
       icon: "⬡",
     },
     {
-      title: "Ingénieur data",
-      tags: ["Python", "Pandas", "Plotly", "ETL / scraping"],
-      icon: "⬡",
-    },
-    {
-      title: "Chef de projet",
-      tags: ["Secteur gov", "Santé", "Stratégie", "Livraison"],
+      title: "Data & livraison",
+      tags: [
+        "Python",
+        "Pandas",
+        "Plotly",
+        "ETL / scraping",
+        "Secteur gov",
+        "Santé",
+        "Stratégie",
+      ],
       icon: "⬡",
     },
   ],
@@ -102,13 +108,13 @@ const ROLES = {
 const COPY = {
   en: {
     eyebrow: "The team",
-    title: "Four people. Zero fluff.",
+    title: "Small team. Zero fluff.",
     sub: "A tight crew — each person owns their domain.",
     roles_label: "Who's in the room",
   },
   fr: {
     eyebrow: "L'équipe",
-    title: "Quatre personnes. Zéro superflu.",
+    title: "Petite équipe. Zéro superflu.",
     sub: "Une équipe soudée — chacun maîtrise son domaine.",
     roles_label: "Qui est dans l'équipe",
   },
@@ -141,16 +147,16 @@ export function TeamSection({ lang = "en" }: { lang?: Lang }) {
   const roles = ROLES[lang];
 
   return (
-    <section id="team" className="max-w-[920px] mx-auto px-8 py-20">
+    <section id="team" className="max-w-230 mx-auto px-8 py-20">
       {/* Header */}
       <FadeUp>
-        <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-[var(--accent)] mb-[0.4rem]">
+        <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-(--accent) mb-[0.4rem]">
           {t.eyebrow}
         </p>
-        <h2 className="font-serif text-[clamp(26px,4vw,40px)] tracking-[-0.025em] text-[var(--fg)] mb-[0.6rem] leading-[1.1]">
+        <h2 className="font-serif text-[clamp(26px,4vw,40px)] tracking-[-0.025em] text-(--fg) mb-[0.6rem] leading-[1.1]">
           {t.title}
         </h2>
-        <p className="text-[14px] text-[var(--muted)] leading-[1.75] max-w-[400px] mb-12">
+        <p className="text-[14px] text-(--muted) leading-[1.75] max-w-100 mb-12">
           {t.sub}
         </p>
       </FadeUp>
@@ -170,33 +176,33 @@ export function TeamSection({ lang = "en" }: { lang?: Lang }) {
                 ease: [0.22, 1, 0.36, 1],
               }}
               whileHover={{ x: 4 }}
-              className="grid gap-4 py-[1.1rem] border-b border-[var(--border)] items-baseline cursor-default"
+              className="grid gap-4 py-[1.1rem] border-b border-(--border) items-baseline cursor-default"
               style={{ gridTemplateColumns: "32px 1fr" }}
             >
-              <span className="text-[10px] font-bold text-[var(--accent)] tracking-[0.06em]">
+              <span className="text-[10px] font-bold text-(--accent) tracking-[0.06em]">
                 {item.num}
               </span>
               <div>
-                <span className="text-[15px] font-semibold text-[var(--fg)] tracking-[-0.01em]">
+                <span className="text-[15px] font-semibold text-(--fg) tracking-[-0.01em]">
                   {item.bold}
                 </span>
-                <span className="text-[14px] text-[var(--muted)] ml-2 leading-[1.6]">
+                <span className="text-[14px] text-(--muted) ml-2 leading-[1.6]">
                   {item.sub}
                 </span>
               </div>
             </motion.div>
           ))}
-          <div className="border-b border-[var(--border)]" />
+          <div className="border-b border-(--border)" />
         </div>
       </FadeUp>
 
       {/* Role cards */}
       <FadeUp delay={0.1}>
-        <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-[var(--muted)] mb-5">
+        <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-(--muted) mb-5">
           {t.roles_label}
         </p>
         <div
-          className="grid gap-[10px]"
+          className="grid gap-2.5"
           style={{ gridTemplateColumns: "repeat(auto-fill,minmax(190px,1fr))" }}
         >
           {roles.map((role, i) => (
@@ -211,9 +217,9 @@ export function TeamSection({ lang = "en" }: { lang?: Lang }) {
                 ease: [0.22, 1, 0.36, 1],
               }}
               whileHover={{ y: -2, borderColor: "var(--accent)" }}
-              className="bg-[var(--surface)] border border-[var(--border)] rounded-[6px] p-5 cursor-default transition-colors duration-200"
+              className="bg-(--surface) border border-(--border) rounded-md p-5 cursor-default transition-colors duration-200"
             >
-              <div className="w-9 h-9 rounded-full border border-[var(--border)] flex items-center justify-center mb-[0.85rem]">
+              <div className="w-9 h-9 rounded-full border border-(--border) flex items-center justify-center mb-[0.85rem]">
                 <svg
                   width="14"
                   height="14"
@@ -227,7 +233,7 @@ export function TeamSection({ lang = "en" }: { lang?: Lang }) {
                 </svg>
               </div>
 
-              <p className="text-[13px] font-semibold text-[var(--fg)] mb-[0.65rem] tracking-[-0.01em]">
+              <p className="text-[13px] font-semibold text-(--fg) mb-[0.65rem] tracking-[-0.01em]">
                 {role.title}
               </p>
 
@@ -235,7 +241,7 @@ export function TeamSection({ lang = "en" }: { lang?: Lang }) {
                 {role.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[10px] text-[var(--muted)] bg-[var(--surface-hover)] border border-[var(--border)] px-[7px] py-[2px] rounded-[3px]"
+                    className="text-[10px] text-(--muted) bg-(--surface-hover) border border-(--border) px-1.75 py-0.5 rounded-[3px]"
                   >
                     {tag}
                   </span>

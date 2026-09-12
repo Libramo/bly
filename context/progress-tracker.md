@@ -4,15 +4,16 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-- SEO improvement initiative — In Progress. All planned fixes for this
-  round (canonical/www consistency, `/services` + `/contact` pages,
-  internal linking, `data-scroll-behavior` fix) are complete and were
-  actually committed + pushed in `01b7c5f` ("fix SEO issues",
-  2026-07-24) — **this file just never got updated to say so.**
-  Live-confirmed 2026-08-29 (`/services` loads correctly in prod). The
-  "not deployed" language below this line is stale; ignore it. Real
-  remaining blocker is indexing/authority (zero backlinks, no crawlable
-  French content), not a pending deploy.
+- SEO improvement initiative — In Progress. Two rounds of fixes are now
+  live in production: (1) canonical/www consistency, `/services` +
+  `/contact` pages, internal linking (`01b7c5f`, 2026-07-24), and (2)
+  the `[locale]` French-default routing migration + French copy pass
+  (`1b96deb`, `44486c5`, 2026-08-29). The former hard blocker — zero
+  crawlable French content — is fixed and deployed. `www.blyanalytics.com`
+  is confirmed indexed by Google as of 2026-08-29. Remaining work is
+  waiting on Google's crawl/snippet-refresh cycle, plus the
+  still-untouched levers: backlinks (zero) and `/articles` content
+  (not started).
 
 ## Current Goal
 
@@ -266,18 +267,91 @@ Update this file after every meaningful implementation change.
     - `npm run build` and a targeted `eslint` pass on every touched file
       both clean (only the pre-existing, unrelated `setMounted`-in-effect
       warning remains).
-  - Not yet committed/pushed — user will start the server and verify
-    manually before that happens.
+  - **Committed and pushed**: `1b96deb` ("add French-default locale
+    routing, unify nav across pages") and `44486c5` ("write French copy
+    targeting real search phrasing"). User verified manually in the
+    browser first. Confirmed live 2026-08-29 via direct checks:
+    - Live `sitemap.xml` fetched and valid — 5 URLs, correct
+      French/English `hreflang` alternates.
+    - Search Console URL Inspection on `https://blyanalytics.com/`
+      (bare domain, no `www`) correctly shows "not indexed / page with
+      redirect" — expected, since that domain intentionally 308s to
+      `www` (invariant 5); not a bug.
+    - Search Console URL Inspection on `https://www.blyanalytics.com/`
+      (the real canonical) shows **"Page is indexed"**, served over
+      HTTPS — the site is genuinely in Google's index now.
+    - Google search still shows the old "Digital Consultancy" title as
+      of this session's end — expected lag between "indexed" and "the
+      live snippet reflects the latest crawl"; user clicked "Request
+      Indexing" on the `www` homepage to prompt a fresh crawl. Not
+      resolved yet, no action needed beyond waiting — revisit next
+      session if it's still stale after a few days.
+
+## Completed (session 6, 2026-09-10)
+
+- **Genericized team headcount in `components/team-section.tsx`** — user
+  wants to stay vague about the exact team size ("4") rather than state
+  it publicly. Changed:
+  - Section title EN "Four people. Zero fluff." → "Small team. Zero
+    fluff."; FR "Quatre personnes. Zéro superflu." → "Petite équipe.
+    Zéro superflu."
+  - FR manifesto item 03 said "quatre personnes" while the EN version of
+    the same line already said "small team" — a real EN/FR inconsistency
+    caught while fixing this; FR now matches ("petite équipe").
+  - The role-card grid was 4 cards (Full-stack engineer / UI/UX designer
+    / Data engineer / Project lead) — even with no number in the text,
+    one-icon-per-card visually implied 4 people. Consolidated to 3
+    grouped capability cards (Engineering / Design / Data & delivery),
+    merging the old Data engineer + Project lead tags into the third
+    group, so the card count no longer maps 1:1 to headcount.
+  - Also updated the "4-person" mentions in `context/project-overview.md`
+    (Overview section) and the legacy commented-out block in `CLAUDE.md`
+    to say "small" instead, for consistency across docs (these are
+    internal-only and never rendered on the site, but user asked to
+    genericize them too).
+- `npm run build` verified clean after the change.
+
+## Completed (session 7, 2026-09-11)
+
+- **Business card design (marketing collateral, not app code)** — Bly
+  was selected to attend a Francophonie economic mission event in
+  Djibouti; built a two-sided business card (French front / English
+  back, same info both sides) as a Claude Design canvas artifact:
+  https://claude.ai/code/artifact/acd9e01f-fab3-47e7-bc20-d5451b36b6c5
+  - Left column: logo, name + title (honorific prefixed: M./Mme,
+    Mr./Ms.), phone, email, `blyanalytics.com`. Right column: a large
+    QR code (~40% of card width) encoding a **vCard** (not a link) so
+    scanning prompts "Add to Contacts" directly — no landing page
+    needed. No street address anywhere, consistent with Bly having no
+    physical office.
+  - QR codes are custom-rendered (not the plain `qrcode` npm output):
+    finder "eyes" and a decorative rounded frame recolored to the
+    site's accent `#4059e5`, data modules stay black for scan
+    contrast. Verified after every regeneration by rasterizing +
+    decoding with `jsqr` to confirm the vCard payload survived —
+    caught this the hard way after nearly hand-retyping a user-provided
+    KoloQR SVG (500+ path elements) into a file by hand, which risked
+    silently corrupting the scannable data; copied the file directly
+    from disk instead once the user gave a local path.
+  - Cards built for Liban Yonis Omar (Co-fondateur & développeur
+    full-stack) and Ayan Yonis Omar (Chargée de mission — chosen over
+    "Dirigeante" since she isn't actually a director, and over generic
+    options since "chargée de mission" echoes the event's own "mission
+    économique" framing).
+  - Full reusable spec (HTML template, QR generation script, how to
+    add a new collaborator) written to `context/business-card.md` —
+    explicitly *not* wired into the Next.js app; kept here only so a
+    future session can reproduce the same card for new hires.
 
 ## Next Up
 
 Priority order (highest leverage first):
 
-1. **User to manually verify** the `[locale]` migration locally
-   (`npm run dev` or `npm run start`) — check `/` renders French with
-   `<html lang="fr">`, `/en` renders English with `<html lang="en">`,
-   language toggles land on the correct sibling URL, and
-   `/work/{slug}` resolves under both. Then commit + push + deploy.
+1. **Wait for Google to recrawl + update the live snippet** for
+   `https://www.blyanalytics.com/` — indexing requested 2026-08-29,
+   typically takes days, sometimes longer for a new/low-authority
+   domain. Also request indexing on `/en` (not yet done as of this
+   session).
 2. ~~French copy targeting real search phrasing~~ — **done 2026-08-29**.
    Working phrases "conseil digital" and "analyse de données" (matching
    the exact wording of "boite analyse de données djibouti" and
@@ -301,18 +375,27 @@ Priority order (highest leverage first):
    - English copy intentionally untouched — not the target language for
      these queries.
    - `npm run build` verified clean after the pass.
-3. Use Search Console "Request Indexing" on `/`, `/en`, `/services`,
-   `/en/services`, `/contact`, `/en/contact` individually once deployed,
-   rather than waiting for organic recrawl.
-4. Re-check the Search Console coverage report ~1-2 weeks post-deploy —
-   confirm "Page with redirect" and "Alternate canonical" exclusions
-   actually cleared, and that the new `/en/*` tree starts getting
-   indexed alongside the `fr` root tree.
-5. Get 2-3 real backlinks (LinkedIn post linking to the site, a
-   directory listing, a partner mention) — still zero, still the
-   biggest lever for ranking (not just indexing) that hasn't been
-   touched.
-6. `/articles` via Payload CMS — not started, no schema/integration yet
+3. Request indexing on `/services`, `/en/services`, `/contact`,
+   `/en/contact`, and both `/work/{slug}` URLs in both locales —
+   only the `www` homepage has been done so far.
+4. Re-check the Search Console coverage report in a week or two —
+   confirm the `www` homepage's snippet actually updated to the new
+   French title, and that the `/en/*` tree is getting indexed alongside
+   the `fr` root tree.
+5. **Google Business Profile** (new idea from this session, not
+   previously tracked) — register as a service-area business (Djibouti),
+   no physical storefront needed. Strong, fast lever specifically for
+   "[service] + Djibouti" style local queries — often outranks organic
+   results for exactly that pattern. User to do manually
+   (business.google.com); not something doable from the codebase.
+6. Get 2-3 real backlinks — still zero, still the biggest lever for
+   ranking (not just indexing). Concrete starting points discussed this
+   session: a LinkedIn post from the Bly Analytics company page linking
+   to the site; asking the two existing clients (Docto-Djib, Ejo) for a
+   "Built by Bly Analytics" credit link on their own sites; a directory
+   listing (e.g. Clutch.co) — exact Djibouti-specific directories
+   unconfirmed, worth checking locally.
+7. `/articles` via Payload CMS — not started, no schema/integration yet
    (swapped from Strapi 2026-08-29, nothing was built against it).
 
 ## Open Questions
