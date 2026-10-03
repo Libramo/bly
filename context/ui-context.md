@@ -2,11 +2,11 @@
 
 ## Theme
 
-Light and dark, driven by a `data-theme` attribute on `<html>`
-(`"light" | "dark"`). A no-flash inline script in `app/layout.tsx` reads
-`localStorage` before first paint to avoid a theme flash.
-`ThemeProvider` (`components/theme-provider.tsx`) syncs React state with
-the DOM attribute; `ThemeToggle` is a pill with a sliding thumb and
+Light and dark, driven by a `dark` class on `<html>` (`next-themes`,
+`attribute="class"`, default `system`). `next-themes` injects its own
+no-flash script that reads `localStorage` before first paint.
+`ThemeProvider` (`components/theme-provider.tsx`, mounted once in
+`app/[locale]/layout.tsx`) wraps `next-themes`; `ThemeToggle` is a pill with a sliding thumb and
 crescent/sun icon swap. Visual language is warm/neutral (off-white paper
 in light mode, near-black in dark mode) with a single blue accent —
 editorial rather than "dark technical workspace."
@@ -14,7 +14,7 @@ editorial rather than "dark technical workspace."
 ## Colors
 
 CSS custom properties defined in `app/globals.css` under `:root` (light)
-and `[data-theme="dark"]`. All components consume these via `var(--*)`
+and `.dark`. All components consume these via `var(--*)`
 — no hardcoded hex values.
 
 | Role                | CSS Variable          | Light       | Dark                     |
@@ -68,9 +68,19 @@ components as the project has been doing.
   background and border on scroll. Active link tracked via `useState`
   with an animated underline (`layoutId="nav-underline"`). Mobile:
   hamburger → slide-down drawer with staggered link animation.
-- **Work cards**: expandable, only one open at a time; collapsed shows
-  tag + title + one-liner, expanded shows stat + description + stack
-  pills + case-study link.
+- **Work cards (homepage)**: expandable, only one open at a time;
+  collapsed shows tag + title + one-liner, expanded shows stat +
+  description + case-study link + live-site link, and client / stack /
+  live status on the right (each only when present). Ends with "Voir
+  toutes nos réalisations →".
+- **Réalisations grid (`/work`)**: 2-col hairline grid (same pattern as
+  service cards); each card = framed screenshot (or stat on an
+  `--accent-subtle` panel), tag, title, one-liner, stretched link to the
+  case study + separate live-site link.
+- **Live preview hover card**: on links to live products (hero "Livré
+  pour" line, "Voir le site en ligne ↗"), a 280px screenshot in a
+  minimal browser frame fades in after 250ms; fine-pointer devices only,
+  never shown on touch.
 - **Service cards**: 1px grid gap on a `var(--border)` background,
   creating hairline dividers between cells.
 - **Section entrances**: `FadeUp` scroll-triggered animation used across

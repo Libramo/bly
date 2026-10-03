@@ -4,23 +4,34 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { type Project } from "@/lib/projects";
 import { Navbar } from "./navbar";
+import { BrowserFrame } from "./live-preview-link";
 import { localizedHref, type Lang } from "@/lib/i18n";
 
 const LABELS = {
   en: {
-    challenge: "The challenge",
+    challenge: "The context",
     what: "What we built",
+    highlights: "Highlights",
     decisions: "Key decisions",
     outcome: "The outcome",
     stack: "Stack",
+    client: "Client",
+    status: "Type",
+    own_initiative: "Bly initiative · public interest",
+    live: "Live · Open the site ↗",
     next: "Next project →",
   },
   fr: {
-    challenge: "Le défi",
+    challenge: "Le contexte",
     what: "Ce qu'on a construit",
+    highlights: "Points clés",
     decisions: "Décisions clés",
     outcome: "Le résultat",
     stack: "Stack",
+    client: "Client",
+    status: "Type",
+    own_initiative: "Initiative Bly · intérêt public",
+    live: "En ligne · Ouvrir le site ↗",
     next: "Projet suivant →",
   },
 };
@@ -73,33 +84,70 @@ export function CaseStudyPage({
         </FadeUp>
 
         {/* Stat + stack strip */}
-        <FadeUp delay={0.12}>
-          <div className="flex gap-px bg-(--border) border border-(--border) rounded-md overflow-hidden mb-16">
-            <div className="bg-(--surface) px-6 py-5 shrink-0">
-              <p className="font-serif text-[36px] tracking-[-0.04em] text-(--accent) leading-none mb-0.75">
-                {project.stat.value}
-              </p>
-              <p className="text-[11px] text-(--muted) tracking-[0.04em]">
-                {project.stat.label[lang]}
-              </p>
+        {(project.stat || project.stack) && (
+          <FadeUp delay={0.12}>
+            <div className="flex gap-px bg-(--border) border border-(--border) rounded-md overflow-hidden mb-16">
+              {project.stat && (
+                <div className="bg-(--surface) px-6 py-5 shrink-0">
+                  <p className="font-serif text-[36px] tracking-[-0.04em] text-(--accent) leading-none mb-0.75">
+                    {project.stat.value}
+                  </p>
+                  <p className="text-[11px] text-(--muted) tracking-[0.04em]">
+                    {project.stat.label[lang]}
+                  </p>
+                </div>
+              )}
+              {project.stack && (
+                <div className="bg-(--surface) px-6 py-5 flex-1">
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-(--muted) mb-[0.6rem]">
+                    {t.stack}
+                  </p>
+                  <div className="flex flex-wrap gap-1.25">
+                    {project.stack.map((s) => (
+                      <span
+                        key={s}
+                        className="text-[11px] text-(--muted) bg-(--surface-hover) border border-(--border) px-2 py-0.75 rounded-[3px]"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {project.url && !project.stack && (
+                <div className="bg-(--surface) px-6 py-5 flex-1">
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-(--muted) mb-[0.6rem]">
+                    {project.client ? t.client : t.status}
+                  </p>
+                  <p className="text-[14px] text-(--fg) leading-[1.5]">
+                    {project.client ?? t.own_initiative}
+                  </p>
+                </div>
+              )}
             </div>
-            <div className="bg-(--surface) px-6 py-5 flex-1">
-              <p className="text-[10px] font-bold tracking-widest uppercase text-(--muted) mb-[0.6rem]">
-                {t.stack}
-              </p>
-              <div className="flex flex-wrap gap-1.25">
-                {project.stack.map((s) => (
-                  <span
-                    key={s}
-                    className="text-[11px] text-(--muted) bg-(--surface-hover) border border-(--border) px-2 py-0.75 rounded-[3px]"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </FadeUp>
+          </FadeUp>
+        )}
+
+        {/* Live product */}
+        {project.url && project.preview && (
+          <FadeUp delay={0.15}>
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener"
+              className="block mb-16 no-underline transition-opacity hover:opacity-90"
+            >
+              <BrowserFrame
+                url={project.url}
+                preview={project.preview}
+                alt={project.title[lang]}
+                sizes="(min-width: 768px) 656px, 100vw"
+                footer={t.live}
+                eager
+              />
+            </a>
+          </FadeUp>
+        )}
 
         {/* Body sections */}
         {[
@@ -118,35 +166,43 @@ export function CaseStudyPage({
           </FadeUp>
         ))}
 
-        {/* Key decisions */}
-        <FadeUp delay={0.3}>
-          <div className="mb-12">
-            <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-(--accent) mb-5">
-              {t.decisions}
-            </p>
-            <div className="flex flex-col">
-              {project.decisions.map((d, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -12 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.07 }}
-                  className="border-t border-(--border) py-5 grid gap-8 items-start"
-                  style={{ gridTemplateColumns: "200px 1fr" }}
-                >
-                  <p className="text-[13px] font-semibold text-(--fg) leading-[1.4]">
-                    {d.title[lang]}
+        {/* Highlights / key decisions */}
+        {[
+          { label: t.highlights, items: project.highlights },
+          { label: t.decisions, items: project.decisions },
+        ].map(
+          ({ label, items }) =>
+            items && (
+              <FadeUp key={label} delay={0.3}>
+                <div className="mb-12">
+                  <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-(--accent) mb-5">
+                    {label}
                   </p>
-                  <p className="text-[13px] text-(--muted) leading-[1.8]">
-                    {d.body[lang]}
-                  </p>
-                </motion.div>
-              ))}
-              <div className="border-t border-(--border)" />
-            </div>
-          </div>
-        </FadeUp>
+                  <div className="flex flex-col">
+                    {items.map((d, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -12 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: i * 0.07 }}
+                        className="border-t border-(--border) py-5 grid gap-8 items-start"
+                        style={{ gridTemplateColumns: "200px 1fr" }}
+                      >
+                        <p className="text-[13px] font-semibold text-(--fg) leading-[1.4]">
+                          {d.title[lang]}
+                        </p>
+                        <p className="text-[13px] text-(--muted) leading-[1.8]">
+                          {d.body[lang]}
+                        </p>
+                      </motion.div>
+                    ))}
+                    <div className="border-t border-(--border)" />
+                  </div>
+                </div>
+              </FadeUp>
+            ),
+        )}
 
         {/* Outcome */}
         <FadeUp delay={0.35}>

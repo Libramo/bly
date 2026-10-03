@@ -8,7 +8,6 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navbar";
 import { TeamSection } from "@/components/team-section";
 import { WorkSection } from "@/components/work-section";
@@ -29,7 +28,7 @@ const C = {
     hero_sub:
       "Bly Analytics is a Djibouti-based digital consultancy building platforms for governments, clinics, and businesses across East Africa — with the precision of a product team and the speed of a startup.",
     cta1: "Start a project",
-    cta2: "See our portofolio",
+    cta2: "See our work",
 
     svc_eyebrow: "What we build",
     svc_title: "Services",
@@ -97,7 +96,7 @@ const C = {
     hero_sub:
       "Bly Analytics est une agence de conseil digital basée à Djibouti, spécialisée dans l'analyse de données et la conception de plateformes pour les gouvernements, les cliniques et les entreprises en Afrique de l'Est.",
     cta1: "Démarrer un projet",
-    cta2: "Voir notre portofolio",
+    cta2: "Voir nos réalisations",
 
     svc_eyebrow: "Ce qu'on construit",
     svc_title: "Services",
@@ -240,9 +239,5 @@ export default function BlyPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = use(params) as { locale: Lang };
-  return (
-    <ThemeProvider>
-      <BlyInner lang={locale} />
-    </ThemeProvider>
-  );
+  return <BlyInner lang={locale} />;
 }

@@ -1,22 +1,190 @@
+type Copy = { en: string; fr: string };
+
+type TitledItem = { title: Copy; body: Copy };
+
 export type Project = {
   slug: string;
-  tag: { en: string; fr: string };
-  title: { en: string; fr: string };
-  oneliner: { en: string; fr: string };
-  description: { en: string; fr: string };
-  stack: string[];
-  stat: { value: string; label: { en: string; fr: string } };
+  tag: Copy;
+  title: Copy;
+  oneliner: Copy;
+  description: Copy;
+  // Client organisation, named publicly (shown in the hero "delivered for"
+  // line). Omit for Bly's own initiatives.
+  client?: string;
+  // Public URL of the live product
+  url?: string;
+  // Homepage screenshot of the live product (1440×900, in /public).
+  // Refresh: npx playwright screenshot --channel=chrome
+  //   --viewport-size=1440,900 --wait-for-timeout=9000 <url> public/work/<slug>.png
+  preview?: string;
+  // Omit when the client doesn't want the stack disclosed
+  stack?: string[];
+  stat?: { value: string; label: Copy };
   // Case study page content
-  challenge: { en: string; fr: string };
-  what: { en: string; fr: string };
-  decisions: {
-    title: { en: string; fr: string };
-    body: { en: string; fr: string };
-  }[];
-  outcome: { en: string; fr: string };
+  challenge: Copy;
+  what: Copy;
+  // What the product does for its users
+  highlights?: TitledItem[];
+  // Engineering decisions, with rationale
+  decisions?: TitledItem[];
+  outcome: Copy;
 };
 
 export const PROJECTS: Project[] = [
+  {
+    slug: "fdjh",
+    tag: { en: "Sport & inclusion", fr: "Sport & inclusion" },
+    title: {
+      en: "Fédération Djiboutienne de Handisport — official website",
+      fr: "Fédération Djiboutienne de Handisport — site officiel",
+    },
+    oneliner: {
+      en: "The federation's official website: six disciplines, the full season, and built-in accessibility controls.",
+      fr: "Le site officiel de la fédération : six disciplines, la saison complète et un mode d'accessibilité intégré.",
+    },
+    description: {
+      en: "We designed and delivered the federation's official website — its public face online, built for citizens, athletes, clubs, and partners alike. Live in production.",
+      fr: "Nous avons conçu et livré le site officiel de la fédération — sa vitrine en ligne, pensée pour les citoyens, les athlètes, les clubs et les partenaires. En production.",
+    },
+    client: "Fédération Djiboutienne de Handisport",
+    url: "https://fdjh.org",
+    preview: "/work/fdjh.png",
+    stat: {
+      value: "6",
+      label: { en: "para-sport disciplines", fr: "disciplines handisport" },
+    },
+    challenge: {
+      en: "The Fédération Djiboutienne de Handisport makes sport a right for people with disabilities in Djibouti: six disciplines, affiliated clubs, and athletes competing nationally and internationally. Operating under the Secretariat of State for Sports and in partnership with the national disability agency (ANPH), it needed an official online presence to match — one usable by the very public it serves.",
+      fr: "La Fédération Djiboutienne de Handisport fait du sport un droit pour les personnes en situation de handicap à Djibouti : six disciplines, des clubs affiliés, des athlètes engagés en compétitions nationales et internationales. Placée sous l'autorité du Secrétariat d'État chargé des Sports, en partenariat avec l'ANPH, elle avait besoin d'une vitrine officielle à la hauteur — et utilisable par le public qu'elle sert en premier lieu.",
+    },
+    what: {
+      en: "An official website that presents the federation and its supervising institutions, showcases its six disciplines, publishes news and the full season calendar, and points every visitor — athlete, volunteer, club, or partner — to the right way to get involved.",
+      fr: "Un site officiel qui présente la fédération et ses institutions de tutelle, met en valeur ses six disciplines, publie l'actualité et le calendrier complet de la saison, et oriente chaque visiteur — athlète, bénévole, club ou partenaire — vers la bonne manière de s'engager.",
+    },
+    highlights: [
+      {
+        title: {
+          en: "Six disciplines, one interactive wheel",
+          fr: "Six disciplines, une roue interactive",
+        },
+        body: {
+          en: "Table tennis, pétanque, athletics, chess, futsal, and badminton — browsed with the mouse or the keyboard arrows, each with its season's competitions.",
+          fr: "Tennis de table, pétanque, athlétisme, échecs, futsal et badminton — parcourus à la souris ou aux flèches du clavier, chacun avec les compétitions de sa saison.",
+        },
+      },
+      {
+        title: {
+          en: "The season at a glance",
+          fr: "La saison en un tableau",
+        },
+        body: {
+          en: "The 2025/2026 calendar and results in a single table: discipline, competition, status.",
+          fr: "Le calendrier et les résultats 2025/2026 réunis dans un seul tableau : discipline, compétition, statut.",
+        },
+      },
+      {
+        title: {
+          en: "“Mon confort”: accessibility built in",
+          fr: "« Mon confort » : l'accessibilité intégrée",
+        },
+        body: {
+          en: "A control panel that lets every visitor adjust text size, contrast, and animations — essential for an audience of people with disabilities.",
+          fr: "Un panneau qui permet à chaque visiteur d'adapter la taille du texte, le contraste et les animations — indispensable pour un public en situation de handicap.",
+        },
+      },
+      {
+        title: {
+          en: "Four ways in",
+          fr: "Quatre portes d'entrée",
+        },
+        body: {
+          en: "Athlete, volunteer, club, partner: each profile gets its own path to join the federation.",
+          fr: "Athlète, bénévole, club, partenaire : chaque profil a son propre parcours pour rejoindre la fédération.",
+        },
+      },
+    ],
+    outcome: {
+      en: "Live at fdjh.org. The whole 2025/2026 season is on record — 13 competitions across six disciplines — on a site usable by the people it serves first.",
+      fr: "En ligne sur fdjh.org. Toute la saison 2025/2026 y est retracée — 13 compétitions dans six disciplines — sur un site utilisable par le public qu'il sert en premier lieu.",
+    },
+  },
+  {
+    slug: "rnph",
+    tag: { en: "Inclusion & rights", fr: "Inclusion & droits" },
+    title: {
+      en: "Réseau National des Personnes Handicapées — official website",
+      fr: "Réseau National des Personnes Handicapées — site officiel",
+    },
+    oneliner: {
+      en: "The network's official website — designed to be usable by persons with disabilities themselves.",
+      fr: "Le site officiel du réseau — conçu pour être utilisable par les personnes handicapées elles-mêmes.",
+    },
+    description: {
+      en: "We designed and delivered the network's official website — presenting its mission, member associations, actions, and news to citizens and partners. Live in production.",
+      fr: "Nous avons conçu et livré le site officiel du réseau — sa mission, ses associations membres, ses actions et son actualité, présentées aux citoyens et aux partenaires. En production.",
+    },
+    client: "Réseau National des Personnes Handicapées",
+    url: "https://rnph.org",
+    preview: "/work/rnph.png",
+    stat: {
+      value: "200 %",
+      label: { en: "text resizing", fr: "agrandissement du texte" },
+    },
+    challenge: {
+      en: "The Réseau National des Personnes Handicapées brings together the associations defending the rights of persons with disabilities in Djibouti. Its role: carry a common voice to institutions, unite its members, inform families. Its motto — “Nothing about us without us” — set the bar: the website had to be usable by persons with disabilities themselves.",
+      fr: "Le Réseau National des Personnes Handicapées rassemble les associations qui défendent les droits des personnes en situation de handicap à Djibouti. Son rôle : porter une voix commune auprès des institutions, fédérer ses membres, informer les familles. Sa devise — « Rien sur nous sans nous » — fixait l'exigence : le site devait être utilisable par les personnes handicapées elles-mêmes.",
+    },
+    what: {
+      en: "An official website built around the network's three missions — advocate, unite, inform — with its member associations, actions, news, useful resources, and a membership path for associations. The network's name also appears in Arabic.",
+      fr: "Un site officiel construit autour des trois missions du réseau — plaidoyer, rassembler, informer — avec ses associations membres, ses actions, son actualité, des ressources utiles et un parcours d'adhésion pour les associations. Le nom du réseau figure aussi en arabe.",
+    },
+    highlights: [
+      {
+        title: {
+          en: "Accessible by design",
+          fr: "Accessible dès la conception",
+        },
+        body: {
+          en: "Text resizable up to 200%, full keyboard navigation, reinforced contrast, light or dark theme, and reduced animations when the device asks for it.",
+          fr: "Texte agrandissable jusqu'à 200 %, navigation complète au clavier, contrastes renforcés, thème clair ou sombre, animations réduites lorsque l'appareil le demande.",
+        },
+      },
+      {
+        title: {
+          en: "A public accessibility statement",
+          fr: "Une déclaration d'accessibilité publique",
+        },
+        body: {
+          en: "The site's accessibility commitments are documented and open to anyone, alongside the legal notice.",
+          fr: "Les engagements d'accessibilité du site sont documentés et consultables par tous, avec les mentions légales.",
+        },
+      },
+      {
+        title: {
+          en: "Three missions, three paths",
+          fr: "Trois missions, trois parcours",
+        },
+        body: {
+          en: "Advocate, unite, inform: each mission leads straight to the network's actions, member associations, or resources.",
+          fr: "Plaidoyer, rassembler, informer : chaque mission mène directement aux actions, aux associations membres ou aux ressources.",
+        },
+      },
+      {
+        title: {
+          en: "Membership for associations",
+          fr: "Adhésion des associations",
+        },
+        body: {
+          en: "A dedicated path for associations to join the network and add their voice to its advocacy.",
+          fr: "Un parcours dédié pour qu'une association rejoigne le réseau et porte une voix commune auprès des institutions.",
+        },
+      },
+    ],
+    outcome: {
+      en: "Live at rnph.org: a website the people it's about can use on their own — true to the motto “Nothing about us without us.”",
+      fr: "En ligne sur rnph.org : un site que les personnes concernées peuvent utiliser par elles-mêmes — fidèle à la devise « Rien sur nous sans nous ».",
+    },
+  },
   {
     slug: "healthcare-platform",
     tag: { en: "Healthcare", fr: "Santé" },
@@ -96,8 +264,8 @@ export const PROJECTS: Project[] = [
       fr: "LexDj — publications officielles, modernisées",
     },
     oneliner: {
-      en: "Making Djibouti's official legal publications actually searchable and readable.",
-      fr: "Rendre les publications juridiques officielles de Djibouti vraiment consultables et lisibles.",
+      en: "Our own public-interest platform: making Djibouti's official legal publications actually searchable and readable.",
+      fr: "Notre plateforme d'intérêt public : rendre les publications juridiques officielles de Djibouti vraiment consultables et lisibles.",
     },
     description: {
       en: "Official government publications in Djibouti are public — but nearly hard to navigate in practice. LexDj makes that body of legal knowledge accessible: full-text search, clean reading experience, and structured data where there was only scanned paper.",
@@ -112,9 +280,11 @@ export const PROJECTS: Project[] = [
       "motion/react",
     ],
     stat: {
-      value: "100%",
-      label: { en: "public", fr: "public" },
+      value: "53 845",
+      label: { en: "texts indexed, since 1904", fr: "textes indexés, depuis 1904" },
     },
+    url: "https://lexdj.blyanalytics.com",
+    preview: "/work/lexdj.png",
     challenge: {
       en: "Djibouti's official journal is a public record — but access is effectively limited to those who know where to look, can read dense legal formatting, and happen to have the right edition. Searching across years of publications meant hours of manual work. The information was technically available. Practically, it was not.",
       fr: "Le journal officiel de Djibouti est un registre public — mais l'accès est en pratique limité à ceux qui savent où chercher, peuvent lire des mises en page juridiques denses et ont la bonne édition sous la main. Chercher dans des années de publications signifiait des heures de travail manuel. L'information était techniquement disponible. En pratique, elle ne l'était pas.",

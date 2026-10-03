@@ -6,8 +6,15 @@ import {
   useSpring,
 } from "motion/react";
 import { useRef } from "react";
+import { PROJECTS, type Project } from "@/lib/projects";
+import { LivePreviewLink } from "@/components/live-preview-link";
 
 type Lang = "en" | "fr";
+
+// Publicly-named client deliveries with a live site
+const CLIENTS = PROJECTS.filter(
+  (p): p is Project & { client: string; url: string } => !!(p.client && p.url),
+);
 
 /* ─── Copy ─────────────────────────────────────────────── */
 const C = {
@@ -20,7 +27,8 @@ const C = {
     hero_sub:
       "Bly Analytics is a Djibouti-based digital consultancy building platforms for governments, clinics, and businesses across East Africa — with the precision of a product team and the speed of a startup.",
     cta1: "Start a project",
-    cta2: "See our portofolio",
+    cta2: "See our work",
+    delivered_for: "Delivered for",
 
     svc_eyebrow: "What we build",
     svc_title: "Services",
@@ -86,9 +94,10 @@ const C = {
     h1c: "On livre",
     h1d: "des résultats.",
     hero_sub:
-      "Bly Analytics est une agence de conseil numérique basée à Djibouti, spécialisée dans la conception de plateformes pour les gouvernements, les cliniques et les entreprises en Afrique de l'Est.",
+      "Bly Analytics est une agence de conseil digital basée à Djibouti, spécialisée dans l'analyse de données et la conception de plateformes pour les gouvernements, les cliniques et les entreprises en Afrique de l'Est.",
     cta1: "Démarrer un projet",
-    cta2: "Voir notre portofolio",
+    cta2: "Voir nos réalisations",
+    delivered_for: "Livré pour",
 
     svc_eyebrow: "Ce qu'on construit",
     svc_title: "Services",
@@ -286,6 +295,33 @@ const HeroSection = ({ lang = "en" }: { lang?: Lang }) => {
             <Flip v={t.cta2} id={"c2" + lang} />
           </MagLink>
         </motion.div>
+
+        {CLIENTS.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.85, duration: 0.5 }}
+            className="mt-12 flex flex-wrap items-baseline gap-x-3 gap-y-1"
+          >
+            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-(--muted-2)">
+              <Flip v={t.delivered_for} id={"df" + lang} />
+            </span>
+            {CLIENTS.map((p, i) => (
+              <span key={p.slug} className="text-[13px] text-(--fg)">
+                {i > 0 && <span className="text-(--muted-2) mr-3">·</span>}
+                <LivePreviewLink
+                  url={p.url}
+                  preview={p.preview}
+                  label={p.client}
+                  lang={lang}
+                  className="no-underline border-b border-(--border) hover:border-(--accent) transition-colors"
+                >
+                  {p.client}
+                </LivePreviewLink>
+              </span>
+            ))}
+          </motion.div>
+        )}
       </section>
 
       <div className="border-t border-(--border) max-w-230 mx-auto" />

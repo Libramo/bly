@@ -40,9 +40,10 @@
   (components were migrated off inline styles). Inline `style` props are
   reserved for truly dynamic JS-computed values only (e.g. motion
   transforms).
-- Theme colors always via CSS var tokens (`bg-[var(--surface)]`, etc.),
+- Theme colors always via CSS var tokens (`bg-(--surface)`, etc. — the
+  Tailwind v4 canonical form, not `bg-[var(--surface)]`),
   never hardcoded hex — tokens are defined in `app/globals.css` under
-  `:root` and `[data-theme="dark"]`.
+  `:root` and `.dark` (class set by `next-themes`).
 - Border radius is intentionally sharp/minimal across the site
   (`rounded-[1px]`, `rounded-sm`, `rounded-none` are the common values)
   — don't introduce large radii without checking `ui-context.md`.

@@ -11,9 +11,12 @@ Update this file after every meaningful implementation change.
   (`1b96deb`, `44486c5`, 2026-08-29). The former hard blocker — zero
   crawlable French content — is fixed and deployed. `www.blyanalytics.com`
   is confirmed indexed by Google as of 2026-08-29. Remaining work is
-  waiting on Google's crawl/snippet-refresh cycle, plus the
-  still-untouched levers: backlinks (zero) and `/articles` content
-  (not started).
+  waiting on Google's crawl/snippet-refresh cycle, plus the remaining
+  levers: more backlinks (two client-site credits exist as of
+  2026-10-02) and `/articles` content (not started).
+- Session 8 (2026-10-02/03) added content depth for SEO + the event:
+  client projects (FDJH, RNPH), a real `/work` "Réalisations" page,
+  use-case pages for every project, and an event trifold flyer.
 
 ## Current Goal
 
@@ -49,9 +52,10 @@ Update this file after every meaningful implementation change.
 
 ## In Progress
 
-- None — all session 2/3/4 work below is done and build-verified.
-  Blocked only on the user committing + pushing + deploying (their call,
-  not yet given).
+- None. Session 8 (2026-10-02/03) work — client projects, `/work`
+  "Réalisations" page, use-case pages, hover previews, theme-script
+  warning fix, event flyer — is done, type-checked and build-verified;
+  user is committing + pushing to trigger the deploy.
 
 ## Completed (session 2, 2026-07-24)
 
@@ -343,9 +347,132 @@ Update this file after every meaningful implementation change.
     explicitly *not* wired into the Next.js app; kept here only so a
     future session can reproduce the same card for new hires.
 
+## Completed (session 8, 2026-10-02)
+
+- **Client deliveries highlighted on the site** — user has delivered
+  web apps for two new organisations and wants them featured (ahead of
+  an event). First one added; second one's details still pending.
+  - `lib/projects.ts`: `Project` is now a union — `CaseStudyProject`
+    (the old shape: stack, stat, challenge/what/decisions/outcome) or a
+    showcase project (card copy + required `url`, no case study). Both
+    may carry `client` (publicly named org) and `url` (live site).
+    `hasCaseStudy()` guard + `CASE_STUDIES` export. Rationale: user
+    didn't want to disclose stack, and inventing a challenge/decisions
+    write-up would be fabrication; a thin `/work/[slug]` page would also
+    dilute SEO. `/work/[slug]`, `sitemap.ts`, and `CaseStudyPage` now
+    use `CASE_STUDIES` only.
+  - Added **Fédération Djiboutienne de Handisport** (official name uses
+    "de Handisport", confirmed via ANPH's usage) — official website,
+    public audience, live at `https://fdjh.org`. Listed first in the
+    work section; card expands to client + "Live · fdjh.org" + outbound
+    link instead of stack + case-study link.
+  - `components/hero-section.tsx`: new "Livré pour / Delivered for" line
+    under the CTAs, auto-built from projects with `client` + `url`.
+  - Work section sub-copy no longer hardcodes "Two live platforms".
+  - **Bug fixed**: the 2026-08-29 French SEO copy pass (hero_sub
+    "conseil digital… analyse de données", svc2 "Analyse de données &
+    tableaux de bord") had only been applied to the dead `C` copy object
+    in `app/[locale]/page.tsx` — the rendered `HeroSection` and
+    `ServicesSection` own their own copy and still showed the old text.
+    Now applied to the live components. (`page.tsx`'s `C` object is
+    unused dead code — candidate for deletion.)
+  - `npm run build` + `tsc` clean; lint on touched files clean except a
+    pre-existing unused `useInView` import in `hero-section.tsx`.
+- Second client added: **Réseau National des Personnes Handicapées**
+  (`https://rnph.org`), same showcase shape as FDJH. FDJH slug renamed
+  `fdh` → `fdjh` to match the federation's own acronym.
+- **LexDj is Bly's own public-interest platform, not client work** — it
+  has `url` (`https://lexdj.blyanalytics.com`, root is live now) but no
+  `client`, so it stays out of the hero "Livré pour" line. Its stat was
+  "100% public"; now "53 845 textes indexés, depuis 1904" (figures taken
+  from the live site's own counters — re-check if they grow).
+- **Hover preview cards** (`components/live-preview-link.tsx`): user
+  wanted visitors to "see the work live" on hover. Chose a static
+  screenshot in a minimal browser frame over a live `<iframe>` embed —
+  embeds are heavy on mobile data, break silently if the client site
+  adds `X-Frame-Options`, and expose us to whatever state their site is
+  in. Card appears after 250ms, desktop/fine-pointer only
+  (`pointer-fine:`), click opens the live site in a new tab. Used on the
+  hero client names and every work card's "Voir le site en ligne" link.
+  The card is portalled to `<body>` with `position: fixed` (flips below
+  the link when there's no room above, closes on scroll) — rendering it
+  inline got clipped by the work cards' `overflow-hidden` expand
+  animation. Screenshots are hover-only everywhere — an always-visible inline
+  screenshot in expanded cards was tried and removed at user's request.
+  - Screenshots live in `public/work/<slug>.png` (1440×900), captured
+    with Playwright against installed Chrome; refresh command is in the
+    `preview` field comment in `lib/projects.ts`. Static — re-capture
+    if a client redesigns.
+- Spotted on client sites (not this repo, flagged to user): rnph.org's
+  live meta description ends "TODO: description à confirmer.", and its
+  hero has unfilled hatched image placeholders.
+- `tsc`, `eslint` on touched files, and `npm run build` clean; verified
+  visually on the user's dev server (hero hover + expanded cards).
+- **Réalisations / Work page + use-case pages for every project.**
+  - "Portofolio" (misspelled) renamed: nav + CTAs → FR "Réalisations" /
+    "Voir nos réalisations", EN "Work" / "See our work". Homepage
+    section eyebrow likewise; homepage list stays as a teaser with a
+    "Voir toutes nos réalisations →" link.
+  - `/work` (+ `/en/work`) is now a real page (was a redirect to
+    `/#work`): `components/work-page.tsx`, 2-col hairline grid (same
+    pattern as the service cards), screenshot per card (or the stat on
+    an accent panel when there's no screenshot — Docto-Djib), stretched
+    link to the case study + separate "Site en ligne ↗" link. Own
+    metadata/hreflang, added to `sitemap.ts`. Nav "Réalisations" points
+    to it (full page, same SEO reasoning as `/services`/`/contact`).
+  - `Project` is a single type again — every project has a case-study
+    page. `stack`, `stat`, `decisions` optional; new optional
+    `highlights` (what the product does for users — used where the
+    client didn't want engineering detail disclosed). Case-study page
+    shows client (or "Initiative Bly · intérêt public"), a framed
+    screenshot linking to the live site, and "Le contexte" (renamed from
+    "Le défi") for all projects.
+  - FDJH and RNPH case-study copy is grounded in their live sites
+    (disciplines, season table — 13 competitions, "Mon confort" panel,
+    RNPH accessibility features/statement) — nothing invented. Both
+    sites carry a "Réalisé par Bly Analytics" footer credit linking to
+    blyanalytics.com — **first real backlinks** (see Next Up #6).
+- **Fixed the `next-themes` "Encountered a script tag" warning**
+  (supersedes the 2026-08-29 "leave it" decision). Two causes:
+  1. `app/[locale]/page.tsx` wrapped the homepage in a second, nested
+     `ThemeProvider` (with default `data-theme` attribute, which no CSS
+     uses — the real one in the layout uses `class`). It mounted on
+     every client navigation to `/`, rendering its script client-side.
+     Removed.
+  2. Locale switches remount the `[locale]` layout. `ThemeProvider`
+     wrapper now passes `scriptProps={{ type: "application/json" }}` on
+     the client only — server HTML keeps the executable script (no
+     theme flash); the client copy is inert so React doesn't warn
+     (next-themes already sets `suppressHydrationWarning` on it).
+  Verified: console clean across home → /work → back → EN → FR.
+- LCP warning on `/work`: first-row screenshots (and the case-study
+  screenshot) now `loading="eager"`.
+- `ui-context.md` corrected: theme is a `dark` class, not `data-theme`.
+- **Event flyer (marketing collateral, not app code)** — DL trifold,
+  A4 landscape (1123×794 px, 3 panels of 99 mm), one French and one
+  English version, as a Claude Design canvas:
+  https://claude.ai/artifact/PPWAd9fYTbn5JPxuqiLhG8 (pages "Français" /
+  "English", 2 artboards each: outside = flap · back · cover, inside =
+  services · client work · LexDj + CTA). Contact is
+  `contact@blyanalytics.com` only (user's choice — no personal
+  phone/email). QR → `https://blyanalytics.com`, same blue-eye style as
+  the business card, decode-verified with `jsqr`. Copy mirrors the site
+  (manifesto, services, project facts) — no new claims. Not wired into
+  the Next.js app.
+
 ## Next Up
 
 Priority order (highest leverage first):
+
+0. **After the session-8 deploy**: request indexing in Search Console
+   for `/work`, `/en/work`, `/work/fdjh`, `/work/rnph` (+ `/en/…`).
+   Flagged to user, outside this repo: rnph.org's live meta description
+   still ends "TODO: description à confirmer." and its hero has
+   unfilled image placeholders (they also show in our screenshot —
+   re-capture `public/work/rnph.png` once fixed). Docto-Djib has no
+   live URL/screenshot on the site yet — add `url` + `preview` if it's
+   public. Optional cleanup: delete the dead `C` copy object in
+   `app/[locale]/page.tsx`. Flyer: add 3 mm bleed if printing at a shop.
 
 1. **Wait for Google to recrawl + update the live snippet** for
    `https://www.blyanalytics.com/` — indexing requested 2026-08-29,
@@ -388,11 +515,11 @@ Priority order (highest leverage first):
    "[service] + Djibouti" style local queries — often outranks organic
    results for exactly that pattern. User to do manually
    (business.google.com); not something doable from the codebase.
-6. Get 2-3 real backlinks — still zero, still the biggest lever for
-   ranking (not just indexing). Concrete starting points discussed this
-   session: a LinkedIn post from the Bly Analytics company page linking
-   to the site; asking the two existing clients (Docto-Djib, Ejo) for a
-   "Built by Bly Analytics" credit link on their own sites; a directory
+6. Backlinks — **two now exist** (found 2026-10-02): fdjh.org and
+   rnph.org both carry a "Réalisé par Bly Analytics" footer credit to
+   `https://blyanalytics.com`. Still the biggest ranking lever — more
+   to get: a LinkedIn post from the Bly Analytics company page linking
+   to the site; a credit link on Docto-Djib; a directory
    listing (e.g. Clutch.co) — exact Djibouti-specific directories
    unconfirmed, worth checking locally.
 7. `/articles` via Payload CMS — not started, no schema/integration yet

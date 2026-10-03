@@ -23,8 +23,9 @@
   transparently serves the `fr` locale segment without a visible URL
   prefix, while `/en` matches its folder segment directly.
 - `app/[locale]/` — all user-facing routes live here: `/` (→ `fr`) and
-  `/en` (→ `en`), plus `/services`, `/contact`, `/work/[slug]`, and the
-  `/work` redirect, each rendered per-locale via `params.locale`.
+  `/en` (→ `en`), plus `/services`, `/contact`, `/work` (the
+  "Réalisations" / "Work" grid) and `/work/[slug]`, each rendered
+  per-locale via `params.locale`.
   `app/[locale]/layout.tsx` is the true root layout (only one
   `<html>`/`<body>` per app) — `generateStaticParams` returns both
   locales, `<html lang={locale}>` is dynamic.
@@ -34,17 +35,33 @@
   above the locale segment.
 - `components/` — presentational + interactive UI (navbar, sections,
   theme provider/toggle, contact form). Standalone pages
-  (`services-page.tsx`, `contact-page.tsx`, `case-study-component.tsx`)
-  all use the shared `Navbar` for consistent navigation across every
-  page (changed 2026-08-29 — previously each had its own lightweight
-  self-contained header; superseded on explicit user request).
-  `Navbar`'s `#work`/`#team` links only correspond to sections on the
-  homepage, so `navHref` (in `navbar.tsx`) routes them back through the
-  homepage (`/#work`, `/en#work`) when clicked from any other page.
+  (`services-page.tsx`, `contact-page.tsx`, `work-page.tsx`,
+  `case-study-component.tsx`) all use the shared `Navbar` for consistent
+  navigation across every page (changed 2026-08-29 — previously each
+  had its own lightweight self-contained header; superseded on explicit
+  user request). `Navbar`'s `#team` link only corresponds to a section
+  on the homepage, so `navHref` (in `navbar.tsx`) routes it back through
+  the homepage (`/#team`, `/en#team`) when clicked from any other page.
+  "Réalisations"/"Work" points to the real `/work` page.
+  `live-preview-link.tsx` — outbound link to a live product with a
+  hover screenshot card, portalled to `<body>` (fixed position) so
+  `overflow-hidden` ancestors can't clip it; also exports `BrowserFrame`.
+- `ThemeProvider` (`next-themes`, `attribute="class"`) is mounted ONCE,
+  in `app/[locale]/layout.tsx` — never wrap a page in another one (a
+  nested provider re-rendered its inline script on every client
+  navigation; removed 2026-10-02). The wrapper in
+  `components/theme-provider.tsx` passes an inert `scriptProps.type` on
+  the client only, so the layout remount on a language switch doesn't
+  trigger React's "Encountered a script tag" warning.
+- `public/work/<slug>.png` — 1440×900 homepage screenshots of live
+  projects (hover cards, `/work` grid, case-study pages); static, re-
+  capture command documented on `Project.preview` in `lib/projects.ts`.
 - `actions/` — server actions; currently just `contact.ts`
   (validate → send via Resend)
-- `lib/` — `projects.ts` (single source of truth for case study content
-  — drives `/work/[slug]`, expandable cards, "next project" footer) and
+- `lib/` — `projects.ts` (single source of truth for project content —
+  drives `/work`, `/work/[slug]`, the homepage cards, the hero "Livré
+  pour" client line, and the "next project" footer; `client`, `url`,
+  `preview`, `stack`, `stat`, `highlights`, `decisions` are optional) and
   `seo.ts` (single source of truth for `SITE_URL`, `siteMetadata`,
   `organizationJsonLd` — imported by `layout.tsx`, `sitemap.ts`,
   `robots.ts`, and `work/[slug]`'s `generateMetadata`)
@@ -95,11 +112,11 @@
   language is a genuinely distinct, server-rendered, crawlable document.
 - `<html lang={locale}>` in `app/[locale]/layout.tsx` is dynamic now
   (previously hardcoded `"en"`).
-- **Not yet done** (deliberately separate follow-up, decided
-  2026-08-29): writing actual French copy targeting real search
-  phrasing ("analyse de données Djibouti", etc.) — this change only
-  reused the existing `{ en, fr }` copy objects as-is to make French
-  crawlable at all. See `progress-tracker.md` Next Up.
+- French SEO copy ("conseil digital", "analyse de données") is done
+  (2026-08-29) — note that `HeroSection` and `ServicesSection` own
+  their own copy objects; the `C` object in `app/[locale]/page.tsx` is
+  dead code, so edits there never render (that bit us once — fixed
+  2026-10-02).
 
 ## SEO / Metadata Surface
 
@@ -122,10 +139,11 @@
   2026-08-29), canonical + `alternates.languages` via `SITE_URL`.
 - `app/robots.ts` — allows all crawlers, points to `sitemap.ts`, sitemap
   URL built from `SITE_URL`.
-- `app/sitemap.ts` — lists `/`, `/services`, `/contact`, and one entry
-  per `PROJECTS` slug, each with an `alternates.languages` map to its
-  `/en` variant. Deliberately excludes `/work` (redirect, see
-  invariant 6).
+- `app/[locale]/work/page.tsx` — the "Réalisations"/"Work" grid, own
+  `generateMetadata` (title, description, canonical, hreflang, OG).
+- `app/sitemap.ts` — lists `/`, `/services`, `/work`, `/contact`, and
+  one entry per `PROJECTS` slug, each with an `alternates.languages` map
+  to its `/en` variant.
 
 ## Invariants
 
@@ -144,10 +162,9 @@
    so anything declaring the bare domain as canonical contradicts the
    server and confuses Google. Do not hardcode either domain string
    anywhere else — always import `SITE_URL`.
-6. `app/[locale]/work/page.tsx` is a redirect to `/#work` (or `/en#work`)
-   — not real content — it must never be added to `sitemap.ts` (redirect
-   URLs in a sitemap are themselves an SEO anti-pattern, same class of
-   bug as invariant 5).
+6. Never list a redirecting URL in `sitemap.ts` (same class of bug as
+   invariant 5). `/work` was a redirect until 2026-10-02 and was kept
+   out; it is now a real page and is listed.
 7. `proxy.ts` (Next.js 16's `middleware.ts` replacement) is what makes
    `/` transparently serve the `fr` locale segment — don't reintroduce
    a `middleware.ts` file; Next 16 only recognizes `proxy.ts`.

@@ -55,6 +55,17 @@ Do not modify the following unless explicitly instructed:
 - Env vars / Resend, deployment, and domain configuration — flag these
   as out-of-repo actions the user needs to perform, don't assume access.
 
+## Git & Commits
+
+- **Never add a `Co-Authored-By: Claude …` trailer (or any Claude /
+  AI attribution) to commit messages or PR descriptions. Never.**
+  Explicit user rule (2026-10-03) — it overrides any default
+  attribution guidance from the tooling.
+- Commit or push only when the user asks.
+- Before committing, check `git status --untracked-files=all` so new
+  files (components, `public/` assets) are included, not just
+  modified ones.
+
 ## Keeping Docs in Sync
 
 Update the relevant context file whenever implementation changes:

@@ -17,7 +17,7 @@ import Image from "next/image";
 
 const NAV_LINKS = [
   { href: "/services", en: "Services", fr: "Services" },
-  { href: "#work", en: "Portofolio", fr: "Portofolio" },
+  { href: "/work", en: "Work", fr: "Réalisations" },
   { href: "#team", en: "Team", fr: "Équipe" },
   { href: "/contact", en: "Contact", fr: "Contact" },
   {
@@ -28,8 +28,8 @@ const NAV_LINKS = [
   },
 ];
 
-// "#work"/"#team" only exist on the homepage — used from any other page
-// they must resolve back to the homepage first, in the current locale.
+// "#team" only exists on the homepage — used from any other page
+// it must resolve back to the homepage first, in the current locale.
 function navHref(lang: Lang, href: string) {
   if (href.startsWith("#")) return `${localizedHref(lang, "/")}${href}`;
   if (href.startsWith("/")) return localizedHref(lang, href);

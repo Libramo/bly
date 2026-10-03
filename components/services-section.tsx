@@ -19,7 +19,7 @@ const C = {
     hero_sub:
       "Bly Analytics is a Djibouti-based digital consultancy building platforms for governments, clinics, and businesses across East Africa — with the precision of a product team and the speed of a startup.",
     cta1: "Start a project",
-    cta2: "See our portofolio",
+    cta2: "See our work",
 
     svc_eyebrow: "What we build",
     svc_title: "Services",
@@ -87,7 +87,7 @@ const C = {
     hero_sub:
       "Bly Analytics est une agence de conseil numérique basée à Djibouti, spécialisée dans la conception de plateformes pour les gouvernements, les cliniques et les entreprises en Afrique de l'Est.",
     cta1: "Démarrer un projet",
-    cta2: "Voir notre portofolio",
+    cta2: "Voir nos réalisations",
 
     svc_eyebrow: "Ce qu'on construit",
     svc_title: "Services",
@@ -95,9 +95,9 @@ const C = {
     svc1_t: "Plateformes web",
     svc1_d:
       "Apps full-stack avec Next.js, Drizzle et Postgres. Auth multi-rôles, dashboards, systèmes de réservation.",
-    svc2_t: "Tableaux de bord analytiques",
+    svc2_t: "Analyse de données & tableaux de bord",
     svc2_d:
-      "Dashboards KPI interactifs avec pipelines de données. Python/Dash ou Next.js avec Recharts.",
+      "Analyse de données et dashboards KPI interactifs avec pipelines de données. Python/Dash ou Next.js avec Recharts.",
     svc3_t: "Digitalisation gouvernementale",
     svc3_d:
       "Systèmes de licences, registres et permis conçus pour les institutions djiboutiennes.",

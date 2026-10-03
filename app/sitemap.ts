@@ -15,5 +15,11 @@ function entry(path: string): MetadataRoute.Sitemap[number] {
 export default function sitemap(): MetadataRoute.Sitemap {
   const projects = PROJECTS.map((p) => entry(`/work/${p.slug}`));
 
-  return [entry(""), entry("/services"), entry("/contact"), ...projects];
+  return [
+    entry(""),
+    entry("/services"),
+    entry("/work"),
+    entry("/contact"),
+    ...projects,
+  ];
 }

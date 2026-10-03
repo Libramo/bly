@@ -86,15 +86,13 @@ export function ContactSection({ lang = "en" }: { lang?: "en" | "fr" }) {
             </AnimatePresence>
           </p>
 
-          <div className="border-t border-[var(--border)] pt-6">
-            <p className="text-[11px] text-[var(--muted-2)] mb-[6px]">
-              {t.alt}
-            </p>
+          <div className="border-t border-(--border) pt-6">
+            <p className="text-[11px] text-(--muted-2) mb-1.5">{t.alt}</p>
             <motion.a
               href="mailto:contact@blyanalytics.com"
               whileHover={{ x: 4 }}
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[13px] font-bold text-[var(--accent)] no-underline border-b border-[var(--accent-subtle)] pb-[2px] inline-block"
+              className="text-[13px] font-bold text-(--accent) no-underline border-b border-(--accent-subtle) pb-0.5 inline-block"
             >
               contact@blyanalytics.com
             </motion.a>

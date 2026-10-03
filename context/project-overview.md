@@ -58,8 +58,14 @@ clients discover and vet the studio.
 ### Case studies
 
 - `/work/[slug]` — dynamic route driven entirely by `lib/projects.ts`
-- Each project: challenge, approach, key decisions (with rationale),
-  outcome, stack
+- `/work` — "Réalisations" / "Work" grid of every project (homepage
+  section is a short teaser linking to it)
+- Each project: context, what we built, highlights and/or key
+  decisions, outcome; stack and stat optional (some clients don't want
+  the stack disclosed). Live projects show a screenshot + link.
+- Projects with a public `client` + `url` also appear in the hero's
+  "Livré pour / Delivered for" line; Bly's own initiatives (LexDj) are
+  labelled "Initiative Bly · intérêt public" instead.
 
 ### Lead capture
 
